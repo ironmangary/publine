@@ -1,0 +1,38 @@
+[
+  {
+    "short_name": "CC-BY-4.0",
+    "long_name": "Creative Commons Attribution 4.0",
+    "link": "https://creativecommons.org/licenses/by/4.0/",
+    "description": "Others can copy, remix, and distribute—even commercially—as long as they credit you."
+  },
+  {
+    "short_name": "CC-BY-SA-4.0",
+    "long_name": "Creative Commons Attribution-ShareAlike 4.0",
+    "link": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "description": "Others can remix and distribute your work, even commercially, if they credit you and license their creations under the same terms."
+  },
+  {
+    "short_name": "CC-BY-NC-4.0",
+    "long_name": "Creative Commons Attribution-NonCommercial 4.0",
+    "link": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "description": "Others can reuse and adapt your work for non-commercial purposes only, with credit."
+  },
+  {
+    "short_name": "CC-BY-NC-SA-4.0",
+    "long_name": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0",
+    "link": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "description": "Others can remix and share your work non-commercially, with credit, and license their adaptations under identical terms."
+  },
+  {
+    "short_name": "CC-BY-ND-4.0",
+    "long_name": "Creative Commons Attribution-NoDerivatives 4.0",
+    "link": "https://creativecommons.org/licenses/by-nd/4.0/",
+    "description": "Others can copy and distribute your work—even commercially—but cannot change it and must credit you."
+  },
+  {
+    "short_name": "CC-BY-NC-ND-4.0",
+    "long_name": "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0",
+    "link": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "description": "Others can share your work unchanged, for non-commercial purposes only, with credit. No remixing allowed."
+  }
+]

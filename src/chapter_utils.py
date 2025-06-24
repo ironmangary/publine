@@ -131,3 +131,15 @@ def delete_chapter(project_path, chapters):
     save_chapters(get_chapters_path(project_path), chapters)
     print("✅ Chapter removed.")
 
+def ensure_cover_image(prefs_path, prefs, includes_path):
+    if not prefs.get("cover_image"):
+        print("\n📷 No cover image specified.")
+        available = [f for f in os.listdir(includes_path) if f.lower().endswith(('.jpg', '.png'))]
+        if available:
+            print("Available image files:")
+            for img in available:
+                print(f"- {img}")
+        chosen = input("Enter cover image filename (or leave blank for none): ").strip()
+        prefs["cover_image"] = chosen or ""
+        save_json(prefs_path, prefs)
+

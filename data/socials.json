@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "label": "YouTube",
+    "follow_url": "https://www.youtube.com/@{handle}"
+  },
+  "github": {
+    "label": "GitHub",
+    "follow_url": "https://github.com/{handle}"
+  },
+  "mastodon": {
+    "label": "Mastodon",
+    "follow_url": "https://mastodon.social/@{handle}",
+    "share_url": "https://toot.community/share?text={title} {url}"
+  },
+  "bluesky": {
+    "label": "Bluesky",
+    "follow_url": "https://bsky.app/profile/{handle}",
+    "share_url": "https://bsky.app/intent/compose?text={title} {url}"
+  },
+  "facebook": {
+    "label": "Facebook",
+    "follow_url": "https://www.facebook.com/{handle}",
+    "share_url": "https://www.facebook.com/sharer/sharer.php?u={url}"
+  },
+  "instagram": {
+    "label": "Instagram",
+    "follow_url": "https://www.instagram.com/{handle}"
+  },
+  "x": {
+    "label": "X (formerly Twitter)",
+    "follow_url": "https://x.com/{handle}",
+    "share_url": "https://x.com/intent/tweet?text={title}&url={url}"
+  },
+  "tiktok": {
+    "label": "TikTok",
+    "follow_url": "https://www.tiktok.com/@{handle}"
+  },
+  "email": {
+    "label": "Email",
+    "share_url": "mailto:?subject={title}&body={url}"
+  }
+}
