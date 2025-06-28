@@ -143,3 +143,7 @@ def ensure_cover_image(prefs_path, prefs, includes_path):
         prefs["cover_image"] = chosen or ""
         save_json(prefs_path, prefs)
 
+def format_chapter_heading(chapter, use_titles=True):
+    if use_titles:
+        return f"Chapter {chapter['number']}: {chapter['title']}"
+    return f"Chapter {chapter['number']}"

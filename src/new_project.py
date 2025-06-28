@@ -22,7 +22,6 @@ def create_project():
     title = input("Project title: ").strip()
     author = input("Author name: ").strip()
     copyright_year = input("Copyright year: ").strip()
-    use_titles = prompt_bool("Use chapter titles?")
 
     slug = slugify(title)
     base_path = os.path.join("projects", slug)
@@ -37,7 +36,6 @@ def create_project():
         "story_title": title,
         "story_author": author,
         "copyright": copyright_year,
-        "use_chapter_titles": use_titles,
         "cover_image": ""
     }
 
