@@ -1,5 +1,7 @@
 # Ignore Python virtual environments
 pl-env/
+pl-win-env/
+pl-linux-env/
 
 # Ignore Python cache files
 __pycache__/

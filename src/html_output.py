@@ -1,11 +1,11 @@
 import os
 import shutil
 import json
-from src.utils import load_prefs, save_prefs, load_follow_links, load_share_links
+from src.utils import load_prefs, save_prefs, load_json
 from src.chapter_utils import format_chapter_heading
 
-def choose_html_layout_features(prefs_path):
-    prefs = load_prefs(prefs_path)
+def choose_html_layout_features(project_path):
+    prefs = load_prefs(project_path)
 
     default_features = {
         "use_chapter_titles": True,
@@ -69,7 +69,7 @@ def choose_html_layout_features(prefs_path):
             print("Invalid choice. Try again.\n")
 
     prefs["display_features"] = features
-    save_prefs(prefs_path, prefs)
+    save_prefs(project_path, prefs)
     return features
 
 def html_header(prefs, chapter=None, epub_exists=False, pdf_exists=False, chapter_list=None):
@@ -256,9 +256,7 @@ def create_html_chapter_page(chapter, chapters, prefs, project_path):
     header_block = html_header(prefs, chapter, epub_exists=os.path.exists(epub_path), pdf_exists=os.path.exists(pdf_path), chapter_list=chapters)
 
     # FOOTER
-    print("Loading prefs from:", prefs_path) # debug
-    print(json.dumps(chapter, indent=2)) # debug
-    footer_block = html_footer(prefs, chapter=chapter, chapter_list=chapters, follow_links=load_follow_links(project_path), share_links=load_share_links(project_path))
+    footer_block = html_footer(prefs, chapter=chapter, chapter_list=chapters, follow_links=load_json(project_path, follow_links.json), share_links=load_json(project_path, share_links.json))
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -288,7 +286,7 @@ def create_html_index_page(chapters, prefs, project_path):
     ])
 
     header_block = html_header(prefs)
-    footer_block = html_footer(prefs, follow_links=load_follow_links(project_path), share_links=load_share_links(project_path))
+    footer_block = html_footer(prefs, follow_links=load_json(project_path, follow_links.json), share_links=load_json(project_path, share_links.json))
 
     html = f"""<!DOCTYPE html>
 <html lang="en">

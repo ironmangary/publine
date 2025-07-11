@@ -2,7 +2,7 @@ import os
 import json
 import argparse
 from src.paths import socials_path
-from src.utils import load_json, save_json, save_prefs
+from src.utils import load_json, save_json, load_prefs, save_prefs
 from src.chapter_utils import ensure_cover_image
 from src.html_output import choose_html_layout_features, build_html, create_html_chapter_page, create_html_index_page
 from src.epub_output import build_epub
@@ -64,11 +64,8 @@ def manage_projects():
 
     slug = args.project if args.project in projects else prompt_project(projects)
     project_path = os.path.join("projects", slug)
-    project_data_path = os.path.join(project_path, "data")
-    prefs_path = os.path.join(project_path, "data", "prefs.json")
-    chapters_path = os.path.join(project_path, "data", "chapters.json")
     includes_path = os.path.join(project_path, "includes")
-    prefs = load_json(prefs_path)
+    prefs = load_prefs(project_path)
     story_title = prefs.get("story_title", slug)
     
     while True:
@@ -90,9 +87,9 @@ def manage_projects():
         elif choice == "2": # Manage Preferences
             print("🛠️ Preferences UI not implemented yet.")
         elif choice == "3": # Manage Social Media Accounts
-            choose_follow_links(project_data_path, socials_path)
+            choose_follow_links(project_path, socials_path)
         elif choice == "4": # Manage Social Media Accounts
-            choose_share_links(project_data_path, socials_path)
+            choose_share_links(project_path, socials_path)
         elif choice == "5": # Choose License
             chosen = choose_license(licenses_path)
             if chosen:
@@ -103,18 +100,18 @@ def manage_projects():
             else:
                 print("\n⚠️  License update canceled or invalid.")
         elif choice == "6": # Customize HTML Page Layout
-            choose_html_layout_features(prefs_path)
+            choose_html_layout_features(project_path)
         elif choice == "7": # Publish Output
-            prefs = load_json(prefs_path)
-            ensure_cover_image(prefs_path, prefs, includes_path)
-            chapters = load_json(chapters_path)
+            prefs = load_prefs(project_path)
+            ensure_cover_image(project_path, includes_path)
+            chapters = load_json(project_path, "chapters.json")
             formats = prompt_formats()
             if "html" in formats:
                 build_html(project_path, prefs, chapters)
             if "epub" in formats:
-                build_epub(project_path, prefs, chapters)
+                build_epub(project_path)
             if "pdf" in formats:
-                build_pdf(project_path, prefs, chapters)
+                build_pdf(project_path)
             print("\n✅ Publishing complete.")
         elif choice == "8": # Back
             break

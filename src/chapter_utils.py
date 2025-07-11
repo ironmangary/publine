@@ -1,7 +1,7 @@
 import os
 import json
 from src.importer import import_content
-
+from src.utils import load_json, save_json, load_prefs, save_prefs
 def get_chapters_path(project_path):
     return os.path.join(project_path, "data", "chapters.json")
 
@@ -131,7 +131,8 @@ def delete_chapter(project_path, chapters):
     save_chapters(get_chapters_path(project_path), chapters)
     print("✅ Chapter removed.")
 
-def ensure_cover_image(prefs_path, prefs, includes_path):
+def ensure_cover_image(project_path, includes_path):
+    prefs = load_prefs(project_path)
     if not prefs.get("cover_image"):
         print("\n📷 No cover image specified.")
         available = [f for f in os.listdir(includes_path) if f.lower().endswith(('.jpg', '.png'))]
@@ -141,7 +142,7 @@ def ensure_cover_image(prefs_path, prefs, includes_path):
                 print(f"- {img}")
         chosen = input("Enter cover image filename (or leave blank for none): ").strip()
         prefs["cover_image"] = chosen or ""
-        save_json(prefs_path, prefs)
+        save_prefs(project_path, prefs)
 
 def format_chapter_heading(chapter, use_titles=True):
     if use_titles:

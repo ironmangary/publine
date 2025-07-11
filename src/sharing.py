@@ -4,7 +4,7 @@ from src.utils import load_prefs, save_prefs
 from urllib.parse import quote_plus
 
 def choose_share_links(project_data_dir, socials_path):
-    share_path = os.path.join(project_data_dir, "share_links.json")
+    share_path = os.path.join(project_path, "data", "share_links.json")
 
     # Load global socials.json
     with open(socials_path, "r", encoding="utf-8") as f:
