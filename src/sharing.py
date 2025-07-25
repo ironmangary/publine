@@ -5,23 +5,33 @@ from urllib.parse import quote_plus
 
 def choose_share_links(project_path, socials_path):
     # Load global socials.json
-    with open(socials_path, "r", encoding="utf-8") as f:
-        platforms = json.load(f)
+    try:
+        with open(socials_path, "r", encoding="utf-8") as f:
+            platforms = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"Error decoding socials.json: {e}")
+        return
 
-    # Filter platforms that have share_url
-    shareable = {k: v for k, v in platforms.items() if "share_url" in v}
-    selected = load_links(project_path)
+    # Filter platforms that have share_url and handle non-string keys
+    shareable = {}
+    for k, v in platforms.items():
+        if isinstance(k, str) and "share_url" in v:
+            shareable[k] = v
+        else:
+            print(f"Warning: Skipping invalid key in socials.json: {k}. Keys must be strings.")
+
+    share_links, follow_links = load_links(project_path) # Unpack the tuple
 
     print("\n📢 Currently selected sharing platforms:")
-    if selected:
-        for s in selected:
+    if share_links: # Use share_links instead of selected
+        for s in share_links:
             label = shareable.get(s, {}).get('label', s)
             print(f"  • {label}")
     else:
         print("  (none selected)")
 
     while True:
-        remaining = [p for p in shareable if p not in selected]
+        remaining = [p for p in shareable if p not in share_links] # Use share_links
         if not remaining:
             print("✅ All available platforms have been selected.")
             break
@@ -34,9 +44,9 @@ def choose_share_links(project_path, socials_path):
         try:
             idx = int(choice) - 1
             key = remaining[idx]
-            if key not in selected:
-                selected.append(key)
-                save_share_links(project_path, selected)  # <-- use new helper
+            if key not in share_links: # Use share_links
+                share_links.append(key)
+                save_links(project_path, share_links, follow_links)
                 print(f"✔️ Enabled sharing via {shareable[key]['label']}")
             else:
                 print("❗ Platform already selected.")
@@ -52,4 +62,3 @@ def resolve_share_urls(title, page_url, selected_platforms, socials_data):
             encoded_url = quote_plus(page_url)
             resolved[platform] = template.replace("{title}", encoded_title).replace("{url}", encoded_url)
     return resolved
-
