@@ -3,7 +3,7 @@ import shutil
 import json
 from src.utils import load_prefs, save_prefs, load_json
 from src.chapter_utils import format_chapter_heading
-from src.social_utils import load_follow_links, load_share_links
+from src.social_utils import load_links
 
 def choose_html_layout_features(project_path):
     prefs = load_prefs(project_path)
@@ -145,8 +145,12 @@ def html_chapter_nav(current_chapter, chapter_list, prefs):
     return f'<nav class="chapter-nav">\n  {" | ".join(nav_links)}\n</nav>'
 
 def html_footer(prefs, chapter=None, chapter_list=None, project_path=None):
-    follow_links = load_follow_links(project_path)
-    share_links = load_share_links(project_path)
+    try:
+        share_links, follow_links = load_links(project_path)
+    except (FileNotFoundError, json.JSONDecodeError):
+        share_links = []
+        follow_links = {}
+
     features = prefs.get("display_features", {})
     html = ['<footer class="footer">']
 
@@ -314,3 +318,4 @@ def create_html_index_page(chapters, prefs, project_path):
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html)
     print(f"✓ TOC page created: {out_path}")
+
