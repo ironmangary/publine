@@ -1,6 +1,6 @@
 import os
 import json
-from src.social_utils import load_share_links, save_share_links
+from src.social_utils import load_links, save_links
 from urllib.parse import quote_plus
 
 def choose_share_links(project_path, socials_path):
@@ -10,7 +10,7 @@ def choose_share_links(project_path, socials_path):
 
     # Filter platforms that have share_url
     shareable = {k: v for k, v in platforms.items() if "share_url" in v}
-    selected = load_share_links(project_path)  # <-- use new helper
+    selected = load_links(project_path)
 
     print("\n📢 Currently selected sharing platforms:")
     if selected:
