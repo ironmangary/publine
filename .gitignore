@@ -18,6 +18,7 @@ Thumbs.db  # Windows
 # Ignore IDE-specific files
 .vscode/
 .idea/
+.env
 
 # Ignore local test data.
 /projects/*
