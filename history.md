@@ -2,6 +2,17 @@
 
 ## Detaileddevelopment history
 
+## v1.0 Alpha 5
+
+- Replaced *follow_links.json* and *share_links.json* with unified **links.json** structure at the project level.
+- Created **social_utils.py** to encapsulate access and modification:
+  - *load_follow_links()* / *save_follow_links()*
+  - *load_share_links()* / *save_share_links()*
+  - *initialize_links()* to scaffold `links.json` during project creation
+- Updated *html_footer()* to load link data internally via *project_path*
+- Adjusted *create_project()* to call *initialize_links()*
+- Fixed a bug in **chapter_utils.py** that was preventing the importing of Word files
+
 ## v1.0 Alpha 4 (2025-07-11)
 
 This release marks the final major feature milestone before GUI and AI planning begins.

@@ -1,25 +1,21 @@
 import os
 import json
-from src.utils import load_prefs, save_prefs
+from src.social_utils import load_follow_links, save_follow_links
 
-def choose_follow_links(project_data_dir, socials_path):
-    follow_path = os.path.join(project_data_dir, "follow_links.json")
-
+def choose_follow_links(project_path, socials_path):
     # Load socials.json (the global template)
     with open(socials_path, "r", encoding="utf-8") as f:
         platforms = json.load(f)
 
-    # Load existing follow_links.json (if any)
-    if os.path.exists(follow_path):
-        follow_links = load_prefs(follow_path)
-    else:
-        follow_links = {}
+    # Load existing follow_links from links.json
+    follow_links = load_follow_links(project_path)
 
     print("\n📌 Existing follow links:")
     for name, handle in follow_links.items():
         url_template = platforms.get(name, {}).get("follow_url")
+        label = platforms.get(name, {}).get("label", name)
         if url_template:
-            print(f"  • {platforms[name]['label']}: {url_template.replace('{handle}', handle)}")
+            print(f"  • {label}: {url_template.replace('{handle}', handle)}")
     if not follow_links:
         print("  (none yet)")
 
@@ -29,23 +25,24 @@ def choose_follow_links(project_data_dir, socials_path):
         print("\n✅ All followable platforms already selected.")
         return
 
-    print("\n➕ Add a platform (or press Enter to finish):")
-    for i, name in enumerate(remaining, 1):
-        print(f"  {i}. {platforms[name]['label']}")
+    while remaining:
+        print("\n➕ Add a platform (or press Enter to finish):")
+        for i, name in enumerate(remaining, 1):
+            print(f"  {i}. {platforms[name].get('label', name)}")
 
-    while True:
         choice = input("Choose a platform by number (or Enter to finish): ").strip()
         if not choice:
             break
         try:
             index = int(choice) - 1
             key = remaining[index]
-            label = platforms[key]["label"]
+            label = platforms[key].get("label", key)
             handle = input(f"Enter your {label} handle (no @ needed): ").strip()
             if handle:
                 follow_links[key] = handle
-                save_prefs(follow_path, follow_links)
+                save_follow_links(project_path, follow_links)  # Saves to links.json
                 print(f"✔️  Added {label}: {handle}")
+                remaining.pop(index)  # Remove selected platform from remaining
             else:
                 print("⚠️  No handle entered.")
         except (IndexError, ValueError):

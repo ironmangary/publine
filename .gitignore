@@ -22,3 +22,4 @@ Thumbs.db  # Windows
 # Ignore local test data.
 /projects/*
 !/projects/.gitkeep
+/data/api.json

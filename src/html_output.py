@@ -3,6 +3,7 @@ import shutil
 import json
 from src.utils import load_prefs, save_prefs, load_json
 from src.chapter_utils import format_chapter_heading
+from src.social_utils import load_follow_links, load_share_links
 
 def choose_html_layout_features(project_path):
     prefs = load_prefs(project_path)
@@ -143,7 +144,9 @@ def html_chapter_nav(current_chapter, chapter_list, prefs):
 
     return f'<nav class="chapter-nav">\n  {" | ".join(nav_links)}\n</nav>'
 
-def html_footer(prefs, chapter=None, chapter_list=None, follow_links={}, share_links=[]):
+def html_footer(prefs, chapter=None, chapter_list=None, project_path=None):
+    follow_links = load_follow_links(project_path)
+    share_links = load_share_links(project_path)
     features = prefs.get("display_features", {})
     html = ['<footer class="footer">']
 
@@ -256,7 +259,7 @@ def create_html_chapter_page(chapter, chapters, prefs, project_path):
     header_block = html_header(prefs, chapter, epub_exists=os.path.exists(epub_path), pdf_exists=os.path.exists(pdf_path), chapter_list=chapters)
 
     # FOOTER
-    footer_block = html_footer(prefs, chapter=chapter, chapter_list=chapters, follow_links=load_json(project_path, follow_links.json), share_links=load_json(project_path, share_links.json))
+    footer_block = html_footer(prefs, chapter=chapter, chapter_list=chapters, project_path=project_path)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -286,7 +289,7 @@ def create_html_index_page(chapters, prefs, project_path):
     ])
 
     header_block = html_header(prefs)
-    footer_block = html_footer(prefs, follow_links=load_json(project_path, follow_links.json), share_links=load_json(project_path, share_links.json))
+    footer_block = html_footer(prefs, project_path=project_path)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">

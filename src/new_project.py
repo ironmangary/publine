@@ -2,6 +2,7 @@ import os
 import json
 import re
 from src.defaults import DEFAULT_CSS
+from src.social_utils import initialize_links
 
 def slugify(text):
     text = text.lower()
@@ -24,10 +25,11 @@ def create_project():
     copyright_year = input("Copyright year: ").strip()
 
     slug = slugify(title)
-    base_path = os.path.join("projects", slug)
-    data_dir = os.path.join(base_path, "data")
-    includes_dir = os.path.join(base_path, "includes")
-    public_dir = os.path.join(base_path, "public")
+    project_path = os.path.join("projects", slug)
+    data_dir = os.path.join(project_path, "data")
+    includes_dir = os.path.join(project_path, "includes")
+    public_dir = os.path.join(project_path, "public")
+    initialize_links(project_path)
 
     for path in [data_dir, includes_dir, public_dir]:
         os.makedirs(path, exist_ok=True)
@@ -45,7 +47,7 @@ def create_project():
     with open(os.path.join(data_dir, "chapters.json"), "w", encoding="utf-8") as f:
         json.dump([], f, indent=4)
 
-    with open(os.path.join(base_path, "README.md"), "w", encoding="utf-8") as f:
+    with open(os.path.join(project_path, "README.md"), "w", encoding="utf-8") as f:
         f.write(f"# {title}\n\nProject scaffolded with Publine.\n\nAuthor: {author}\nCopyright © {copyright_year}")
 
     with open(os.path.join(includes_dir, "chapter_0.html"), "w", encoding="utf-8") as f:
@@ -54,7 +56,7 @@ def create_project():
     with open(os.path.join(includes_dir, "styles.css"), "w", encoding="utf-8") as f:
         f.write(DEFAULT_CSS)
 
-    print(f"\n✅ Project '{title}' created at: {base_path}")
+    print(f"\n✅ Project '{title}' created at: {project_path}")
     print("📄 Includes starter prefs, chapters, styles, and chapter_0.html\n")
 
 if __name__ == "__main__":
