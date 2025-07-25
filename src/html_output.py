@@ -5,7 +5,100 @@ from src.utils import load_prefs, save_prefs, load_json
 from src.chapter_utils import format_chapter_heading
 from src.social_utils import load_links
 
+# Define default.css file for projects
+DEFAULT_CSS = """\
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 2em auto;
+    max-width: 700px;
+    padding: 0 1em;
+}
+
+h1, h2, h3 {
+    font-weight: normal;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 1em;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 0.8em;
+}
+
+h3 {
+    font-size: 1.2em;
+    margin-bottom: 0.6em;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.chapter-header {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.chapter-header img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 1em;
+}
+
+.chapter-nav {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.chapter-nav a {
+    margin: 0 0.5em;
+}
+
+.chapter-nav .disabled {
+    color: #ccc;
+}
+
+.download-links {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.download-links a {
+    margin: 0 0.5em;
+}
+
+.share-links, .follow-links {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.share-links a, .follow-links a {
+    margin: 0 0.5em;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 2em;
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+}
+"""
+
 def choose_html_layout_features(project_path):
+    """Choose HTML layout features for the project."""
     prefs = load_prefs(project_path)
 
     default_features = {
@@ -212,6 +305,7 @@ def html_footer(prefs, chapter=None, chapter_list=None, project_path=None):
     return "\n".join(html)
 
 def build_html(project_path, prefs, chapters):
+    """Build HTML files for the project."""
     print("\n🛠️ Generating HTML...")
     for ch in chapters:
         create_html_chapter_page(ch, chapters, prefs, project_path)
@@ -219,7 +313,7 @@ def build_html(project_path, prefs, chapters):
     public_dir = os.path.join(project_path, "public")
     os.makedirs(public_dir, exist_ok=True)
 
-# Check for styles.css
+    # Check for styles.css
     style_src = os.path.join(project_path, "includes", "styles.css")
     if not os.path.isfile(style_src):
         print("⚠️  styles.css not found in /includes/")
@@ -231,12 +325,12 @@ def build_html(project_path, prefs, chapters):
         else:
             print("🚫 Skipping stylesheet generation.")
 
-# Copy styles.css
+    # Copy styles.css
     style_dst = os.path.join(public_dir, "styles.css")
     if os.path.isfile(style_src) and not os.path.exists(style_dst):
         shutil.copyfile(style_src, style_dst)
 
-# Copy cover image
+    # Copy cover image
     cover_src = os.path.join(project_path, "includes", prefs.get("cover_image", ""))
     cover_dst = os.path.join(public_dir, os.path.basename(cover_src))
     if os.path.isfile(cover_src) and not os.path.exists(cover_dst):
