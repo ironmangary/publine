@@ -27,10 +27,7 @@ def save_json(path, data):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
-def load_follow_links(project_path):
-    path = os.path.join(project_path, "data", "follow_links.json")
+def load_links(project_path):
+    path = os.path.join(project_path, "data", "links.json")
     return load_json(path)
 
-def load_share_links(project_path):
-    path = os.path.join(project_path, "data", "share_links.json")
-    return load_json(path)
