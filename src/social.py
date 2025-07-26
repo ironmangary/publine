@@ -6,7 +6,7 @@ from src.utils import load_json, save_json
 def choose_follow_links(project_path, socials_path):
     """Allows the user to choose which social media platforms to include follow links for."""
     try:
-        share_links, follow_links = load_links(project_path)
+        share_links, follow_links, handles = load_links(project_path)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Error loading links.json: {e}")
         return
@@ -30,14 +30,16 @@ def choose_follow_links(project_path, socials_path):
             platform = option_map[choice]
             if platform in follow_links:
                 del follow_links[platform]
+                del handles[platform] #remove handle if platform is removed
             else:
                 handle = input(f"Enter {platform} handle: ").strip()
-                follow_links[platform] = handle
+                follow_links[platform] = "" # Placeholder, will be updated later
+                handles[platform] = handle # Store the handle separately
         else:
             print("Invalid choice. Try again.\n")
 
     try:
-        save_links(project_path, share_links, follow_links)
+        save_links(project_path, share_links, follow_links, handles)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Error saving links.json: {e}")
 
