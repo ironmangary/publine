@@ -239,10 +239,11 @@ def html_chapter_nav(current_chapter, chapter_list, prefs):
 
 def html_footer(prefs, chapter=None, chapter_list=None, project_path=None):
     try:
-        share_links, follow_links = load_links(project_path)
+        share_links, follow_links, handles = load_links(project_path)
     except (FileNotFoundError, json.JSONDecodeError):
         share_links = []
         follow_links = {}
+        handles = {}
 
     features = prefs.get("display_features", {})
     html = ['<footer class="footer">']
@@ -273,17 +274,19 @@ def html_footer(prefs, chapter=None, chapter_list=None, project_path=None):
     if features.get("social_links", True) and follow_links:
         html.append('<div class="follow-links"><p>Follow me:</p>')
         for platform, handle in follow_links.items():
-            if platform == "github":
-                url = f"https://github.com/{handle}"
-            elif platform == "x":
-                url = f"https://x.com/{handle}"
-            elif platform == "bluesky":
-                url = f"https://bsky.app/profile/{handle}.bsky.social"
-            elif platform == "mastodon":
-                url = handle  # Full URL expected
-            else:
-                url = "#"
-            html.append(f'<a href="{url}" target="_blank">{platform.title()}</a>')
+            handle_value = handles.get(platform) # Get handle from handles dict
+            if handle_value:
+                if platform == "github":
+                    url = f"https://github.com/{handle_value}"
+                elif platform == "x":
+                    url = f"https://x.com/{handle_value}"
+                elif platform == "bluesky":
+                    url = f"https://bsky.app/profile/{handle_value}.bsky.social"
+                elif platform == "mastodon":
+                    url = handle_value  # Full URL expected
+                else:
+                    url = f"https://www.instagram.com/{handle_value}" # Default to Instagram if no specific URL
+                html.append(f'<a href="{url}" target="_blank">{platform.title()}</a>')
         html.append('</div>')
 
     # Copyright
