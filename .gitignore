@@ -24,3 +24,4 @@ Thumbs.db  # Windows
 /projects/*
 !/projects/.gitkeep
 /data/api.json
+.aider*
