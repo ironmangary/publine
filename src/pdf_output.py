@@ -3,6 +3,7 @@ from pathlib import Path
 from src.utils import load_json
 from weasyprint import HTML, CSS
 import logging
+import json # Added import statement
 
 # Configure logging
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
