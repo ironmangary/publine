@@ -24,7 +24,9 @@ def build_pdf(project_path):
     for chapter in chapters:
         if chapter.get("exclude_from_pdf"):
             continue
-        html_content += f"<h2>{chapter['title']}</h2><div>{chapter['body']}</div>"
+        title = chapter.get('title', 'Untitled Chapter') # Handle missing title
+        body = chapter.get('body', '') # Handle missing body
+        html_content += f"<h2>{title}</h2><div>{body}</div>"
 
     try:
         html = HTML(string=html_content, base_url=str(project_path))
