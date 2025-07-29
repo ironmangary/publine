@@ -65,9 +65,11 @@ def manage_projects():
     slug = args.project if args.project in projects else prompt_project(projects)
     project_path = os.path.join("projects", slug)
     includes_path = os.path.join(project_path, "includes")
+    prefs_path = os.path.join(project_path, "data", "prefs.json") # Added prefs_path
     prefs = load_prefs(project_path)
     story_title = prefs.get("story_title", slug)
-    
+    chapters_path = os.path.join(project_path, "data", "chapters.json") # Added chapters_path
+
     while True:
         print(f"""
 🔧 Project: {story_title}
@@ -104,7 +106,7 @@ def manage_projects():
         elif choice == "7": # Publish Output
             prefs = load_prefs(project_path)
             ensure_cover_image(project_path, includes_path)
-            chapters = load_json(project_path, "chapters.json")
+            chapters = load_json(chapters_path) # Corrected call to load_json
             formats = prompt_formats()
             if "html" in formats:
                 build_html(project_path, prefs, chapters)
