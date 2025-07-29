@@ -4,6 +4,7 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 from src.utils import load_json, load_prefs
+import mimetypes
 
 def build_epub(project_path):
     project_path = Path(project_path)
@@ -50,9 +51,10 @@ def build_epub(project_path):
 
     cover_image_path = project_path / "includes" / prefs.get("cover_image")
     if cover_image_path.exists():
-        epub.write(str(cover_image_path), "OEBPS/images/cover.jpg") # Assumes JPG, adjust if needed
-        manifest_items.append('<item id="cover-image" href="images/cover.jpg" media-type="image/jpeg"/>')
-        # Add cover image to the spine
+        mimetype, _ = mimetypes.guess_type(str(cover_image_path))
+        image_filename = "cover." + mimetype.split("/")[1]
+        epub.write(str(cover_image_path), f"OEBPS/images/{image_filename}")
+        manifest_items.append(f'<item id="cover-image" href="images/{image_filename}" media-type="{mimetype}"/>')
         spine_items.insert(0, '<itemref idref="cover-image"/>')
 
 
