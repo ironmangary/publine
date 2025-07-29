@@ -2,11 +2,18 @@ import os
 from pathlib import Path
 from src.utils import load_json
 from weasyprint import HTML, CSS
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def build_pdf(project_path):
     project_path = Path(project_path)
-    chapters_path = project_path / "data" / "chapters.json"
-    chapters = load_json(chapters_path)
+    try:
+        chapters = load_json(project_path / "data" / "chapters.json")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logging.error(f"Error loading chapter data: {e}")
+        return
 
     output_dir = project_path / "public" / "downloads"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -20,9 +27,9 @@ def build_pdf(project_path):
 
     try:
         html = HTML(string=html_content, base_url=str(project_path))
-        css = CSS(string="body { font-family: sans-serif; }") # Add basic CSS styling
+        css = CSS(string="body { font-family: sans-serif; }")
         html.write_pdf(str(output_path), stylesheets=[css])
         print(f"✅ PDF exported: {output_path}")
     except Exception as e:
-        print(f"❌ Error generating PDF: {e}")
+        logging.error(f"Error generating PDF: {e}")
 
