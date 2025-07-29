@@ -2,8 +2,17 @@
 
 ## Detaileddevelopment history
 
-## v1.0 Alpha 5
+## v1.0 Alpha 5 (2025-07-29)
 
+This release marks the end of Publine CLI development. I will start development of a web UI and AI integrated features starting with v1.0 Alpha 6.
+
+Moving forward, I will be switching to using multiple branches.
+
+- main (the latest stable code)
+- dev (The version under development)
+- v1_alpha5 (An archive of this release, just in case)\
+
+- Finished the processes to build PDF and EPUB files.
 - Replaced *follow_links.json* and *share_links.json* with unified **links.json** structure at the project level.
 - Created **social_utils.py** to encapsulate access and modification:
   - *load_follow_links()* / *save_follow_links()*
