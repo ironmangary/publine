@@ -3,14 +3,15 @@ import zipfile
 import uuid
 from datetime import datetime
 from pathlib import Path
-from src.utils import load_json
+from src.utils import load_json, load_prefs
 
 def build_epub(project_path):
     project_path = Path(project_path)
     chapters_path = project_path / "data" / "chapters.json"
     chapters = load_json(chapters_path)
+    prefs = load_prefs(project_path)
 
-    slug = chapters[0].get("story_title", "untitled").lower().replace(" ", "_") # Get title from first chapter if available
+    slug = chapters[0].get("story_title", "untitled").lower().replace(" ", "_")
     output_dir = project_path / "public" / "downloads"
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / f"{slug}.epub"
@@ -35,7 +36,7 @@ def build_epub(project_path):
         num = chapter["number"]
         title = chapter["title"]
         filename = f"chapter{i}.html"
-        body = chapter["body"] # Directly use the body from the chapter data
+        body = chapter["body"]
 
         html = get_chapter_html(title, body)
         epub.writestr(f"OEBPS/{filename}", html)
@@ -46,6 +47,14 @@ def build_epub(project_path):
         <navLabel><text>{title}</text></navLabel>
         <content src="{filename}"/>
       </navPoint>''')
+
+    cover_image_path = project_path / "includes" / prefs.get("cover_image")
+    if cover_image_path.exists():
+        epub.write(str(cover_image_path), "OEBPS/images/cover.jpg") # Assumes JPG, adjust if needed
+        manifest_items.append('<item id="cover-image" href="images/cover.jpg" media-type="image/jpeg"/>')
+        # Add cover image to the spine
+        spine_items.insert(0, '<itemref idref="cover-image"/>')
+
 
     book_id = str(uuid.uuid4())
     now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
