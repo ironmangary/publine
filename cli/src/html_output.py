@@ -1,9 +1,9 @@
 import os
 import shutil
 import json
-from src.utils import load_prefs, save_prefs, load_json
-from src.chapter_utils import format_chapter_heading
-from src.social_utils import load_links
+from core.src.utils import load_prefs, save_prefs, load_json
+from cli.src.chapter_utils import format_chapter_heading
+from core.src.social_utils import load_links
 
 # Define default.css file for projects
 DEFAULT_CSS = """\

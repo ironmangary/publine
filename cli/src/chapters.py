@@ -1,4 +1,4 @@
-from src.chapter_utils import list_chapters, load_chapters, save_chapters, add_chapter, edit_chapter, delete_chapter, get_chapters_path
+from cli.src.chapter_utils import list_chapters, load_chapters, save_chapters, add_chapter, edit_chapter, delete_chapter, get_chapters_path
 
 def manage_chapters(project_path):
     while True:

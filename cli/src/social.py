@@ -1,7 +1,7 @@
 import os
 import json
-from src.social_utils import load_links, save_links
-from src.utils import load_json, save_json
+from core.src.social_utils import load_links, save_links
+from core.src.utils import load_json, save_json
 
 def choose_follow_links(project_path, socials_path):
     """Allows the user to choose which social media platforms to include follow links for."""

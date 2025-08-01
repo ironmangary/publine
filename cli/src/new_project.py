@@ -1,8 +1,8 @@
 import os
 import json
 import re
-from src.defaults import DEFAULT_CSS
-from src.social_utils import initialize_links
+from core.src.defaults import DEFAULT_CSS
+from core.src.social_utils import initialize_links
 
 def slugify(text):
     text = text.lower()

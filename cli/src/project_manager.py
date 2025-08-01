@@ -1,16 +1,16 @@
 import os
 import json
 import argparse
-from src.paths import socials_path
-from src.utils import load_json, save_json, load_prefs, save_prefs
-from src.chapter_utils import ensure_cover_image
-from src.html_output import choose_html_layout_features, build_html, create_html_chapter_page, create_html_index_page
-from src.epub_output import build_epub
-from src.pdf_output import build_pdf
-from src.chapters import manage_chapters
-from src.licenses import load_license_definitions, save_license_definitions, choose_license
-from src.social import choose_follow_links
-from src.sharing import choose_share_links
+from core.src.paths import socials_path
+from core.src.utils import load_json, save_json, load_prefs, save_prefs
+from cli.src.chapter_utils import ensure_cover_image
+from cli.src.html_output import choose_html_layout_features, build_html, create_html_chapter_page, create_html_index_page
+from cli.src.epub_output import build_epub
+from cli.src.pdf_output import build_pdf
+from cli.src.chapters import manage_chapters
+from cli.src.licenses import load_license_definitions, save_license_definitions, choose_license
+from cli.src.social import choose_follow_links
+from cli.src.sharing import choose_share_links
 
 def list_projects():
     base = "projects"

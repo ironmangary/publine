@@ -1,6 +1,6 @@
 import os
-from src.utils import load_json, save_json
-from src.paths import base_dir
+from core.src.utils import load_json, save_json
+from core.src.paths import base_dir
 
 def get_api_config_path(base_dir):
     return os.path.join(base_dir, "data", "api.json")

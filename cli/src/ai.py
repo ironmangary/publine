@@ -1,4 +1,4 @@
-from src.ai_utils import save_api_config
+from core.src.ai_utils import save_api_config
 import os
 
 def configure_ai_provider():

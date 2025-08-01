@@ -1,6 +1,6 @@
 import os
 import json
-from src.utils import load_json, save_json
+from core.src.utils import load_json, save_json
 
 def load_links(project_path):
     path = os.path.join(project_path, "data", "links.json")

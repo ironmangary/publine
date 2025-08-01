@@ -1,7 +1,8 @@
 import os
 import json
-from src.importer import import_content
-from src.utils import load_json, save_json, load_prefs, save_prefs
+from core.src.importer import import_content
+from core.src.utils import load_json, save_json, load_prefs, save_prefs
+
 def get_chapters_path(project_path):
     return os.path.join(project_path, "data", "chapters.json")
 

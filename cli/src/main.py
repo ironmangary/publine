@@ -1,7 +1,7 @@
 # publine.py
 
 import sys
-from src import new_project, project_manager
+from cli.src import new_project, project_manager
 
 def main_menu():
     print("""

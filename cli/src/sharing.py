@@ -1,6 +1,6 @@
 import os
 import json
-from src.social_utils import load_links, save_links
+from core.src.social_utils import load_links, save_links
 from urllib.parse import quote_plus
 
 def choose_share_links(project_path, socials_path):

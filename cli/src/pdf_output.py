@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from src.utils import load_json
+from core.src.utils import load_json
 from weasyprint import HTML, CSS
 import logging
 import json

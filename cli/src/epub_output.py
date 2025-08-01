@@ -3,10 +3,10 @@ import zipfile
 import uuid
 from datetime import datetime
 from pathlib import Path
-from src.utils import load_json, load_prefs
+from core.src.utils import load_json, load_prefs
 import mimetypes
 import logging
-import json # Added import statement
+import json 
 
 # Configure logging
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
