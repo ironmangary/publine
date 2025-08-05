@@ -38,10 +38,13 @@ def prompt_project(slugs):
         print("❌ Invalid choice.")
 
 def prompt_formats():
-    print("\n📦 What would you like to publish?")
-    print("[1] Static HTML")
-    print("[2] EPUB (stub)")
-    print("[3] PDF (stub)")
+    print("""
+📦 What would you like to publish?
+
+1. Static HTML
+2. EPUB
+3. PDF
+    """)
     choice = input("Enter numbers separated by commas: ").strip()
     selected = []
     for item in choice.split(','):
