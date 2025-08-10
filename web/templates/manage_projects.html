@@ -20,7 +20,7 @@
                 <td>{{ project.title }}</td>
                 <td>{{ project.author }}</td>
                 <td>
-                    <a href="/edit_project/{{ project.slug }}">Edit</a> |
+                    <a href="{{ url_for('project_dashboard', slug=project.slug) }}">Open Project</a> |
                     <form action="/delete_project/{{ project.slug }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete project \'{{ project.title }}\'? This action cannot be undone.');">
                         <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">Delete</button>
                     </form>

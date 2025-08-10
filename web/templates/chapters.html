@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Chapters - {{ project.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Manage Chapters for {{ project.title }}</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="{{ url_for('project_dashboard', slug=project.slug) }}">Back to Project</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <h2>Existing Chapters</h2>
+        {% if chapters %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Discussion</th>
+                        <th>Format</th>
+                        <th>Source</th>
+                        <th>Excl. EPUB</th>
+                        <th>Excl. PDF</th>
+                        <th>Draft</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for chapter in chapters %}
+                    <tr>
+                        <td>{{ chapter.number }}</td>
+                        <td>{{ chapter.title }}</td>
+                        <td>{{ chapter.discussion or '-' }}</td>
+                        <td>{{ chapter.import_format }}</td>
+                        <td>{{ chapter.import_source.split('/')[-1] if chapter.import_source else '-' }}</td>
+                        <td>{{ 'Yes' if chapter.exclude_from_epub else 'No' }}</td>
+                        <td>{{ 'Yes' if chapter.exclude_from_pdf else 'No' }}</td>
+                        <td>{{ 'Yes' if chapter.draft else 'No' }}</td>
+                        <td class="actions">
+                            <a href="{{ url_for('edit_chapter', slug=project.slug, chapter_num=chapter.number) }}" class="button small">Edit</a>
+                            <form action="{{ url_for('delete_chapter', slug=project.slug, chapter_num=chapter.number) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete chapter {{ chapter.number }} ({{ chapter.title }})?');">
+                                <button type="submit" class="button small danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No chapters found for this project.</p>
+        {% endif %}
+
+        <p class="add-button-container">
+            <a href="{{ url_for('add_chapter', slug=project.slug) }}" class="button primary">Add New Chapter</a>
+        </p>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Your App</p>
+        </div>
+    </footer>
+</body>
+</html>

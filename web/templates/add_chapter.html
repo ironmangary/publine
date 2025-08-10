@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Chapter - {{ project.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Add Chapter for {{ project.title }}</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="{{ url_for('chapters_list', slug=project.slug) }}">Back to Chapters</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('add_chapter', slug=project.slug) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="number">Chapter Number:</label>
+                <input type="number" id="number" name="number" required min="1">
+            </div>
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="discussion">Discussion Link (optional):</label>
+                <input type="url" id="discussion" name="discussion">
+            </div>
+            <div class="form-group">
+                <label for="import_format">Import Format:</label>
+                <select id="import_format" name="import_format">
+                    <option value="html">HTML</option>
+                    <option value="txt">Plaintext (.txt)</option>
+                    <option value="docx">Word (.docx)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="chapter_file">Upload Chapter File (optional, will overwrite existing):</label>
+                <input type="file" id="chapter_file" name="chapter_file" accept=".html,.txt,.docx">
+                <small>If left blank, an empty HTML file will be created.</small>
+            </div>
+
+            <button type="submit" class="button primary">Add Chapter</button>
+        </form>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Your App</p>
+        </div>
+    </footer>
+</body>
+</html>
