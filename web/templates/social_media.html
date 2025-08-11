@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Social Media for {{ project.story_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Manage Social Media for "{{ project.story_title }}"</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/manage_projects">Back to Projects</a></li>
+                    <li><a href="{{ url_for('project_dashboard', slug=project.slug) }}">Back to Project Dashboard</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Manage Social Media for "{{ project.story_title }}"</h2>
+            <a href="{{ url_for('project_dashboard', slug=project.slug) }}" class="btn btn-secondary">Back to Project Dashboard</a>
+        </div>
+
+        {% include 'flash_messages.html' %}
+
+        <!-- Manage Follow Links -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Manage Follow Links</h3>
+            </div>
+            <div class="card-body">
+                <h4>Current Follow Links</h4>
+                {% if project_social_links.follow %}
+                    <ul class="list-group mb-3">
+                        {% for platform_key, _ in project_social_links.follow.items() %}
+                            {% set platform_info = all_social_platforms.get(platform_key, {}) %}
+                            {% if platform_info.follow_url %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ platform_info.label | default(platform_key) }}:</strong> 
+                                        <span id="handle-display-{{ platform_key }}">
+                                            {{ project_social_links.handles.get(platform_key, '') }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-sm btn-info me-2" 
+                                                onclick="showEditForm('{{ platform_key }}', '{{ project_social_links.handles.get(platform_key, '') }}')">
+                                            Edit Handle
+                                        </button>
+                                        <form action="{{ url_for('social_media_management', slug=project.slug) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete the {{ platform_info.label | default(platform_key) }} follow link?');">
+                                            <input type="hidden" name="action" value="delete_follow">
+                                            <input type="hidden" name="platform_key" value="{{ platform_key }}">
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </li>
+                                <li id="edit-form-{{ platform_key }}" class="list-group-item" style="display:none;">
+                                    <form action="{{ url_for('social_media_management', slug=project.slug) }}" method="post" class="d-flex">
+                                        <input type="hidden" name="action" value="update_follow">
+                                        <input type="hidden" name="platform_key" value="{{ platform_key }}">
+                                        <input type="text" name="handle" id="edit-handle-{{ platform_key }}" class="form-control me-2" placeholder="Enter new handle" required>
+                                        <button type="submit" class="btn btn-success me-2">Save</button>
+                                        <button type="button" class="btn btn-secondary" onclick="hideEditForm('{{ platform_key }}')">Cancel</button>
+                                    </form>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No follow links currently configured. Add one below!</p>
+                {% endif %}
+
+                <h4 class="mt-4">Add New Follow Link</h4>
+                <form action="{{ url_for('social_media_management', slug=project.slug) }}" method="post" class="row g-3 align-items-end">
+                    <input type="hidden" name="action" value="update_follow">
+                    <div class="col-md-4">
+                        <label for="new_platform_key" class="form-label">Platform</label>
+                        <select class="form-select" id="new_platform_key" name="platform_key" required>
+                            <option value="">Select Platform</option>
+                            {% for key, info in all_social_platforms.items() %}
+                                {% if info.follow_url and key not in project_social_links.follow %}
+                                    <option value="{{ key }}">{{ info.label | default(key) }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="new_handle" class="form-label">Handle</label>
+                        <input type="text" class="form-control" id="new_handle" name="handle" placeholder="e.g., yourusername" required>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">Add Follow Link</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Manage Sharing Links -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Manage Sharing Links</h3>
+            </div>
+            <div class="card-body">
+                <p>Select which social media platforms you want to offer sharing options for:</p>
+                <ul class="list-group">
+                    {% for platform_key, platform_info in all_social_platforms.items() %}
+                        {% if platform_info.share_url %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <form action="{{ url_for('social_media_management', slug=project.slug) }}" method="post" style="display:inline;">
+                                    <input type="hidden" name="action" value="update_share">
+                                    <input type="hidden" name="platform_key" value="{{ platform_key }}">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="share_{{ platform_key }}" 
+                                               name="enable_share" 
+                                               {% if platform_key in project_social_links.share %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="form-check-label" for="share_{{ platform_key }}">
+                                            {{ platform_info.label | default(platform_key) }}
+                                        </label>
+                                    </div>
+                                </form>
+                                <span class="badge bg-{{ 'success' if platform_key in project_social_links.share else 'secondary' }} rounded-pill">
+                                    {{ 'Enabled' if platform_key in project_social_links.share else 'Disabled' }}
+                                </span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Your App</p>
+        </div>
+    </footer>
+
+    <script>
+        function showEditForm(platformKey, currentHandle) {
+            document.getElementById('handle-display-' + platformKey).style.display = 'none';
+            document.getElementById('edit-form-' + platformKey).style.display = 'block';
+            document.getElementById('edit-handle-' + platformKey).value = currentHandle;
+        }
+
+        function hideEditForm(platformKey) {
+            document.getElementById('handle-display-' + platformKey).style.display = 'inline';
+            document.getElementById('edit-form-' + platformKey).style.display = 'none';
+        }
+    </script>
+</body>
+</html>

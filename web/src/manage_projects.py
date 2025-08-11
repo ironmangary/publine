@@ -46,6 +46,7 @@ def get_single_project_details(slug):
     try:
         prefs = load_prefs(project_path)
         prefs['slug'] = slug # Add slug for URL generation
+        prefs['project_path'] = project_path # Add project_path
         return prefs
     except FileNotFoundError:
         return None
