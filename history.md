@@ -2,6 +2,20 @@
 
 ## Detaileddevelopment history
 
+## v1.0 Alpha 6 – Web UI Transition Begins (2025-08-11)
+
+Publine enters a new phase with the initial port of CLI features to a Flask-based web UI. This release marks the beginning of a modular, accessible interface designed to empower writers and creators with clarity and control within a familiar web user interface.
+
+Code drafted with Google Gemini 2.5 Flash through the Aider 0.8.* CLI IDE.
+
+### Features Ported
+
+- Main Menu: Recreated in Flask with intuitive navigation
+- Project Picker: Allows users to select and switch between projects
+- Project Menu: Core project-level actions now available via web
+- Chapter Management: Create, edit, and organize chapters through the UI
+- Social Media Management: Social media account and sharing tools
+
 ## v1.0 Alpha 5 (2025-07-29)
 
 This release marks the end of Publine CLI development. I will start development of a web UI and AI integrated features starting with v1.0 Alpha 6.
@@ -10,7 +24,7 @@ Moving forward, I will be switching to using multiple branches.
 
 - main (the latest stable code)
 - dev (The version under development)
-- v1_alpha5 (An archive of this release, just in case)\
+- cli-final (An archive of this release, just in case)\
 
 - Finished the processes to build PDF and EPUB files.
 - Replaced *follow_links.json* and *share_links.json* with unified **links.json** structure at the project level.
