@@ -45,9 +45,19 @@ def get_single_project_details(slug):
     project_path = get_project_path(slug)
     try:
         prefs = load_prefs(project_path)
-        prefs['slug'] = slug # Add slug for URL generation
-        prefs['project_path'] = project_path # Add project_path
-        return prefs
+        # Ensure that prefs is a dictionary; if not, initialize as empty dict
+        if not isinstance(prefs, dict):
+            prefs = {}
+
+        return {
+            "slug": slug,
+            "project_path": project_path,
+            "title": prefs.get("story_title", "Untitled"),
+            "author": prefs.get("story_author", "Unknown Author"),
+            "copyright_year": prefs.get("copyright_year", ""),
+            # Include other preferences from the loaded file
+            **prefs
+        }
     except FileNotFoundError:
         return None
     except json.JSONDecodeError:

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Add New License{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Add New Global License</h1>
+
+    {% include 'flash_messages.html' %}
+
+    <form method="POST" action="{{ url_for('add_new_license') }}">
+        <div class="mb-3">
+            <label for="short_name" class="form-label">Short Name (e.g., cc-by-5.0)</label>
+            <input type="text" class="form-control" id="short_name" name="short_name" value="{{ form_data.short_name or '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="long_name" class="form-label">Long Name</label>
+            <input type="text" class="form-control" id="long_name" name="long_name" value="{{ form_data.long_name or '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="link" class="form-label">Link/URL</label>
+            <input type="url" class="form-control" id="link" name="link" value="{{ form_data.link or '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Brief Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required>{{ form_data.description or '' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add License</button>
+        <a href="{{ url_for('manage_licenses') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

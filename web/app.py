@@ -6,6 +6,8 @@ from web.src.manage_projects import get_projects_list, delete_project, get_singl
 from web.src.new_project import create_project_files
 from web.src import chapters as web_chapters # Renamed to avoid conflict with template variable
 from web.src import social_media as web_social_media
+from core.src.utils import load_prefs, save_prefs # For project preferences
+from web.src.licenses import load_license_definitions, save_license_definitions
 
 UPLOAD_FOLDER = 'uploads' # Temporary folder for uploaded files
 ALLOWED_EXTENSIONS = {'html', 'txt', 'docx'}
@@ -209,3 +211,92 @@ def delete_chapter(slug, chapter_num):
         pass
     
     return redirect(url_for("chapters_list", slug=slug))
+
+@app.route("/project/<slug>/choose_license", methods=["GET", "POST"])
+def choose_project_license(slug):
+    """Allows selecting a license for a specific project."""
+    project = get_single_project_details(slug)
+    if not project:
+        flash(f"Project '{slug}' not found.", "error")
+        return redirect(url_for("manage_projects"))
+
+    licenses = load_license_definitions()
+    # Initialize project_prefs to an empty dictionary by default
+    project_prefs = {}
+    
+    # Attempt to load project preferences
+    project_prefs_loaded_data = load_prefs(project['project_path'])
+    
+    # If the loaded data is a dictionary, use it. Otherwise, keep project_prefs as an empty dict.
+    if isinstance(project_prefs_loaded_data, dict):
+        project_prefs = project_prefs_loaded_data
+        
+    # Safely get the license information, ensuring it's a dictionary
+    license_info = project_prefs.get('license')
+    if isinstance(license_info, dict):
+        current_license_short_name = license_info.get('short_name', '')
+    else:
+        current_license_short_name = ''
+
+    if request.method == "POST":
+        selected_license_short_name = request.form.get("license_short_name")
+        
+        if not selected_license_short_name:
+            flash("Please select a license.", "danger")
+            return render_template("choose_project_license.html", project=project, licenses=licenses, current_license_short_name=current_license_short_name)
+        
+        chosen_license = next((lic for lic in licenses if lic['short_name'] == selected_license_short_name), None)
+        
+        if chosen_license:
+            project_prefs['license'] = {
+                'short_name': chosen_license['short_name'],
+                'long_name': chosen_license['long_name'],
+                'link': chosen_license['link'],
+                'description': chosen_license['description']
+            }
+            save_prefs(project['project_path'], project_prefs)
+            flash(f"License '{chosen_license['long_name']}' applied to project '{project['title']}'.", "success")
+            return redirect(url_for("project_dashboard", slug=slug))
+        else:
+            flash("Invalid license selected.", "danger")
+
+    return render_template("choose_project_license.html", project=project, licenses=licenses, current_license_short_name=current_license_short_name)
+
+@app.route("/licenses", methods=["GET"])
+def manage_licenses():
+    """Displays a list of available licenses and provides options to manage them."""
+    licenses = load_license_definitions()
+    return render_template("licenses.html", licenses=licenses)
+
+@app.route("/licenses/add", methods=["GET", "POST"])
+def add_new_license():
+    """Handles adding a new global license definition."""
+    if request.method == "POST":
+        short = request.form.get("short_name")
+        long = request.form.get("long_name")
+        link = request.form.get("link")
+        desc = request.form.get("description")
+
+        if not all([short, long, link, desc]):
+            flash("All fields are required to add a new license.", "danger")
+            return render_template("add_license.html", form_data=request.form)
+
+        new_license = {
+            "short_name": short,
+            "long_name": long,
+            "link": link,
+            "description": desc
+        }
+
+        licenses = load_license_definitions()
+        # Check for duplicates
+        if any(lic["short_name"] == short for lic in licenses):
+            flash(f"A license with short name '{short}' already exists.", "danger")
+            return render_template("add_license.html", form_data=request.form)
+
+        licenses.append(new_license)
+        save_license_definitions(licenses)
+        flash(f"License '{long}' ({short}) added successfully.", "success")
+        return redirect(url_for("manage_licenses"))
+    
+    return render_template("add_license.html")
