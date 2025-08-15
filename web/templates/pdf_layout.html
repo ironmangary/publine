@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}PDF Layout for {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% include 'flash_messages.html' %}
+    <h1 class="mb-4">PDF Layout Settings for "{{ project.title }}"</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form method="POST" action="{{ url_for('pdf_layout', slug=project.slug) }}">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Header Options
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Include Title
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="include_title" name="include_title" {% if display_features.include_title %}checked{% endif %}>
+                                <label class="form-check-label" for="include_title"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Include Author
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="include_author" name="include_author" {% if display_features.include_author %}checked{% endif %}>
+                                <label class="form-check-label" for="include_author"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Include Cover Image
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="include_cover_image" name="include_cover_image" {% if display_features.include_cover_image %}checked{% endif %}>
+                                <label class="form-check-label" for="include_cover_image"></label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Footer Options
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Add Page Numbers
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="add_page_numbers" name="add_page_numbers" {% if display_features.add_page_numbers %}checked{% endif %}>
+                                <label class="form-check-label" for="add_page_numbers"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Include License Block
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="include_license_block" name="include_license_block" {% if display_features.include_license_block %}checked{% endif %}>
+                                <label class="form-check-label" for="include_license_block"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Include Copyright
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="include_copyright" name="include_copyright" {% if display_features.include_copyright %}checked{% endif %}>
+                                <label class="form-check-label" for="include_copyright"></label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Other Options
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Embed Fonts
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="embed_fonts" name="embed_fonts" {% if display_features.embed_fonts %}checked{% endif %}>
+                                <label class="form-check-label" for="embed_fonts"></label>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Choose Page Size
+                            <select class="form-select w-auto ms-auto" id="page_size" name="page_size">
+                                <option value="A4" {% if display_features.page_size == 'A4' %}selected{% endif %}>A4</option>
+                                <option value="Letter" {% if display_features.page_size == 'Letter' %}selected{% endif %}>Letter</option>
+                                <option value="Legal" {% if display_features.page_size == 'Legal' %}selected{% endif %}>Legal</option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save PDF Layout Settings</button>
+            </form>
+            <a href="{{ url_for('project_layout', slug=project.slug) }}" class="btn btn-secondary mt-3">Back to Layout Options</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

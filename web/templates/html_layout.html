@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }} - HTML Layout</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{{ project.title }}</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="{{ url_for('project_layout', slug=project.slug) }}">Back to Layouts</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>HTML Layout Configuration</h2>
+        <p>Select which features to include in your generated HTML pages.</p>
+
+        <form method="POST">
+            <h3>Header Features</h3>
+            <ul class="feature-list">
+                <li>
+                    <label>
+                        <input type="checkbox" name="use_chapter_titles" value="on" {{ 'checked' if display_features.get('use_chapter_titles') else '' }}>
+                        Use Chapter Titles
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="cover_image" value="on" {{ 'checked' if display_features.get('cover_image') else '' }}>
+                        Cover Image
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="chapter_nav_top" value="on" {{ 'checked' if display_features.get('chapter_nav_top') else '' }}>
+                        Top Chapter Navigation
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="epub_link" value="on" {{ 'checked' if display_features.get('epub_link') else '' }}>
+                        EPUB Download Link
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="pdf_link" value="on" {{ 'checked' if display_features.get('pdf_link') else '' }}>
+                        PDF Download Link
+                    </label>
+                </li>
+            </ul>
+
+            <h3>Footer Features</h3>
+            <ul class="feature-list">
+                <li>
+                    <label>
+                        <input type="checkbox" name="share_links" value="on" {{ 'checked' if display_features.get('share_links') else '' }}>
+                        Share This Chapter Links
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="discuss_link" value="on" {{ 'checked' if display_features.get('discuss_link') else '' }}>
+                        Discuss This Chapter Link
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="chapter_nav_bottom" value="on" {{ 'checked' if display_features.get('chapter_nav_bottom') else '' }}>
+                        Bottom Chapter Navigation
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="social_links" value="on" {{ 'checked' if display_features.get('social_links') else '' }}>
+                        Social Media Links
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="copyright" value="on" {{ 'checked' if display_features.get('copyright') else '' }}>
+                        Copyright
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="license" value="on" {{ 'checked' if display_features.get('license') else '' }}>
+                        License Info
+                    </label>
+                </li>
+            </ul>
+            
+            <button type="submit" class="button">Save HTML Layout Settings</button>
+        </form>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Your App</p>
+        </div>
+    </footer>
+</body>
+</html>
