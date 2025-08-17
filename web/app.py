@@ -9,9 +9,12 @@ from web.src import social_media as web_social_media
 from web.src import layout_manager as web_layout_manager # For layout features
 from core.src.utils import load_prefs, save_prefs # For project preferences
 from web.src.licenses import load_license_definitions, save_license_definitions
+from web.src.chapter_utils import get_includes_path # To get the includes path for file uploads
 
 UPLOAD_FOLDER = 'uploads' # Temporary folder for uploaded files
-ALLOWED_EXTENSIONS = {'html', 'txt', 'docx'}
+ALLOWED_CHAPTER_EXTENSIONS = {'html', 'txt', 'docx'}
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'svg'}
+ALLOWED_CSS_EXTENSIONS = {'css'}
 
 app = Flask(
     __name__,
@@ -22,9 +25,17 @@ app.secret_key = 'your_secret_key' # Replace with a strong secret key
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True) # Ensure upload folder exists
 
-def allowed_file(filename):
+def allowed_chapter_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_CHAPTER_EXTENSIONS
+
+def allowed_image_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
+
+def allowed_css_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_CSS_EXTENSIONS
 
 @app.route("/", methods=["GET"])
 def index():
@@ -71,8 +82,29 @@ def edit_project(slug):
         new_author = request.form["author"]
         new_copyright_year = request.form["copyright_year"]
 
+        cover_image_file = None
+        if 'cover_image' in request.files:
+            file = request.files['cover_image']
+            if file and allowed_image_file(file.filename):
+                cover_image_file = file
+            elif file.filename != '':
+                flash("Invalid cover image file type. Allowed types: png, jpg, jpeg, gif, svg.", "error")
+                # Re-render the form with existing project data and the error
+                return render_template("edit_project.html", project=project)
+
+        custom_css_file = None
+        if 'custom_css' in request.files:
+            file = request.files['custom_css']
+            if file and allowed_css_file(file.filename):
+                custom_css_file = file
+            elif file.filename != '':
+                flash("Invalid CSS file type. Allowed types: css.", "error")
+                # Re-render the form with existing project data and the error
+                return render_template("edit_project.html", project=project)
+
         success, message = update_project_details(
-            slug, new_title, new_author, new_copyright_year
+            slug, new_title, new_author, new_copyright_year,
+            cover_image_file, custom_css_file
         )
         if success:
             flash(message, "success")
@@ -228,10 +260,10 @@ def add_chapter(slug):
         uploaded_file = None
         if 'chapter_file' in request.files:
             file = request.files['chapter_file']
-            if file and allowed_file(file.filename):
+            if file and allowed_chapter_file(file.filename):
                 uploaded_file = file
             elif file.filename != '': # If a file was selected but not allowed
-                 flash("Invalid file type. Allowed types: html, txt, docx.", "error")
+                 flash("Invalid file type. Allowed types for chapters: html, txt, docx.", "error")
                  return render_template("add_chapter.html", project=project)
         
         if web_chapters.process_add_chapter(slug, request.form, uploaded_file):
@@ -255,10 +287,10 @@ def edit_chapter(slug, chapter_num):
         uploaded_file = None
         if 'chapter_file' in request.files:
             file = request.files['chapter_file']
-            if file and allowed_file(file.filename):
+            if file and allowed_chapter_file(file.filename):
                 uploaded_file = file
             elif file.filename != '': # If a file was selected but not allowed
-                 flash("Invalid file type. Allowed types: html, txt, docx.", "error")
+                 flash("Invalid file type. Allowed types for chapters: html, txt, docx.", "error")
                  return render_template("edit_chapter.html", project=project, chapter=chapter)
         
         if web_chapters.process_edit_chapter(slug, chapter_num, request.form, uploaded_file):
