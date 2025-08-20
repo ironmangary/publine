@@ -13,7 +13,7 @@
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="{{ url_for('chapters_list', slug=project.slug) }}">Back to Chapters</a></li>
+                    <li><a href="{{ url_for('chapters_bp.chapters_list', slug=project.slug) }}">Back to Chapters</a></li>
                 </ul>
             </nav>
         </div>
@@ -30,7 +30,7 @@
             {% endif %}
         {% endwith %}
 
-        <form action="{{ url_for('add_chapter', slug=project.slug) }}" method="post" enctype="multipart/form-data">
+        <form action="{{ url_for('chapters_bp.add_chapter', slug=project.slug) }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="number">Chapter Number:</label>
                 <input type="number" id="number" name="number" required min="1">

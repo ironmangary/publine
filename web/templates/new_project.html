@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Create New Project</h1>
-    <form method="POST" action="{{ url_for('create_project') }}">
+    <form method="POST" action="{{ url_for('projects_bp.create_project') }}">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title" required><br>
         <label for="author">Author:</label><br>

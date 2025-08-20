@@ -8,7 +8,7 @@
 
     {% include 'flash_messages.html' %}
 
-    <form method="POST" action="{{ url_for('add_new_license') }}">
+    <form method="POST" action="{{ url_for('licenses_bp.add_new_license') }}">
         <div class="mb-3">
             <label for="short_name" class="form-label">Short Name (e.g., cc-by-5.0)</label>
             <input type="text" class="form-control" id="short_name" name="short_name" value="{{ form_data.short_name or '' }}" required>
@@ -26,7 +26,7 @@
             <textarea class="form-control" id="description" name="description" rows="3" required>{{ form_data.description or '' }}</textarea>
         </div>
         <button type="submit" class="btn btn-primary">Add License</button>
-        <a href="{{ url_for('manage_licenses') }}" class="btn btn-secondary">Cancel</a>
+        <a href="{{ url_for('licenses_bp.manage_licenses') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 {% endblock %}

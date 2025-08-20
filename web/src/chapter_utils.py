@@ -6,6 +6,12 @@ from flask import current_app
 from core.src.importer import import_content
 from core.src.utils import load_json, save_json, load_prefs, save_prefs # load_prefs/save_prefs not directly used in CUD, but in ensure_cover_image
 
+ALLOWED_CHAPTER_EXTENSIONS = {'html', 'txt', 'docx'}
+
+def allowed_chapter_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_CHAPTER_EXTENSIONS
+
 def get_chapters_path(project_path):
     return os.path.join(project_path, "data", "chapters.json")
 

@@ -8,7 +8,7 @@
 
     {% include 'flash_messages.html' %}
 
-    <form method="POST" action="{{ url_for('choose_project_license', slug=project.slug) }}">
+    <form method="POST" action="{{ url_for('choose_license_bp.choose_project_license', slug=project.slug) }}">
         <div class="mb-3">
             <label for="license_short_name" class="form-label">Select License</label>
             <select class="form-select" id="license_short_name" name="license_short_name" required>

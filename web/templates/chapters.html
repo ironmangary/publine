@@ -13,7 +13,7 @@
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="{{ url_for('project_dashboard', slug=project.slug) }}">Back to Project</a></li>
+                    <li><a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}">Back to Project</a></li>
                 </ul>
             </nav>
         </div>
@@ -58,8 +58,8 @@
                         <td>{{ 'Yes' if chapter.exclude_from_pdf else 'No' }}</td>
                         <td>{{ 'Yes' if chapter.draft else 'No' }}</td>
                         <td class="actions">
-                            <a href="{{ url_for('edit_chapter', slug=project.slug, chapter_num=chapter.number) }}" class="button small">Edit</a>
-                            <form action="{{ url_for('delete_chapter', slug=project.slug, chapter_num=chapter.number) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete chapter {{ chapter.number }} ({{ chapter.title }})?');">
+                            <a href="{{ url_for('chapters_bp.edit_chapter', slug=project.slug, chapter_num=chapter.number) }}" class="button small">Edit</a>
+                            <form action="{{ url_for('chapters_bp.delete_chapter', slug=project.slug, chapter_num=chapter.number) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete chapter {{ chapter.number }} ({{ chapter.title }})?');">
                                 <button type="submit" class="button small danger">Delete</button>
                             </form>
                         </td>
@@ -72,7 +72,7 @@
         {% endif %}
 
         <p class="add-button-container">
-            <a href="{{ url_for('add_chapter', slug=project.slug) }}" class="button primary">Add New Chapter</a>
+            <a href="{{ url_for('chapters_bp.add_chapter', slug=project.slug) }}" class="button primary">Add New Chapter</a>
         </p>
     </main>
 

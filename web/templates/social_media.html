@@ -13,8 +13,8 @@
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="/manage_projects">Back to Projects</a></li>
-                    <li><a href="{{ url_for('project_dashboard', slug=project.slug) }}">Back to Project Dashboard</a></li>
+                    <li><a href="{{ url_for('projects_bp.manage_projects') }}">Back to Projects</a></li>
+                    <li><a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}">Back to Project Dashboard</a></li>
                 </ul>
             </nav>
         </div>
@@ -23,7 +23,7 @@
     <main class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Manage Social Media for "{{ project.story_title }}"</h2>
-            <a href="{{ url_for('project_dashboard', slug=project.slug) }}" class="btn btn-secondary">Back to Project Dashboard</a>
+            <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}" class="btn btn-secondary">Back to Project Dashboard</a>
         </div>
 
         {% include 'flash_messages.html' %}
@@ -52,7 +52,7 @@
                                                 onclick="showEditForm('{{ platform_key }}', '{{ project_social_links.handles.get(platform_key, '') }}')">
                                             Edit Handle
                                         </button>
-                                        <form action="{{ url_for('social_media_management', slug=project.slug) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete the {{ platform_info.label | default(platform_key) }} follow link?');">
+                                        <form action="{{ url_for('social_media_bp.social_media_management', slug=project.slug) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete the {{ platform_info.label | default(platform_key) }} follow link?');">
                                             <input type="hidden" name="action" value="delete_follow">
                                             <input type="hidden" name="platform_key" value="{{ platform_key }}">
                                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
@@ -60,7 +60,7 @@
                                     </div>
                                 </li>
                                 <li id="edit-form-{{ platform_key }}" class="list-group-item" style="display:none;">
-                                    <form action="{{ url_for('social_media_management', slug=project.slug) }}" method="post" class="d-flex">
+                                    <form action="{{ url_for('social_media_bp.social_media_management', slug=project.slug) }}" method="post" class="d-flex">
                                         <input type="hidden" name="action" value="update_follow">
                                         <input type="hidden" name="platform_key" value="{{ platform_key }}">
                                         <input type="text" name="handle" id="edit-handle-{{ platform_key }}" class="form-control me-2" placeholder="Enter new handle" required>
@@ -76,7 +76,7 @@
                 {% endif %}
 
                 <h4 class="mt-4">Add New Follow Link</h4>
-                <form action="{{ url_for('social_media_management', slug=project.slug) }}" method="post" class="row g-3 align-items-end">
+                <form action="{{ url_for('social_media_bp.social_media_management', slug=project.slug) }}" method="post" class="row g-3 align-items-end">
                     <input type="hidden" name="action" value="update_follow">
                     <div class="col-md-4">
                         <label for="new_platform_key" class="form-label">Platform</label>
@@ -111,7 +111,7 @@
                     {% for platform_key, platform_info in all_social_platforms.items() %}
                         {% if platform_info.share_url %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <form action="{{ url_for('social_media_management', slug=project.slug) }}" method="post" style="display:inline;">
+                                <form action="{{ url_for('social_media_bp.social_media_management', slug=project.slug) }}" method="post" style="display:inline;">
                                     <input type="hidden" name="action" value="update_share">
                                     <input type="hidden" name="platform_key" value="{{ platform_key }}">
                                     <div class="form-check form-switch">

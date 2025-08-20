@@ -13,7 +13,7 @@
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="/manage_projects">Back to Projects</a></li>
+                    <li><a href="{{ url_for('projects_bp.manage_projects') }}">Back to Projects</a></li>
                 </ul>
             </nav>
         </div>
@@ -26,11 +26,11 @@
 
         <h3>Project Options</h3>
         <ul class="option-list">
-            <li><a href="{{ url_for('edit_project', slug=project.slug) }}">⚙️ Edit General Preferences</a></li>
-            <li><a href="{{ url_for('chapters_list', slug=project.slug) }}">📚 Manage Chapters</a></li>
-            <li><a href="{{ url_for('social_media_management', slug=project.slug) }}">🌐 Manage Social Media</a></li>
-            <li><a href="{{ url_for('choose_project_license', slug=project.slug) }}">⚖️ Choose Project License</a></li>
-            <li><a href="{{ url_for('project_layout', slug=project.slug) }}">🎨 Configure Layout</a></li>
+            <li><a href="{{ url_for('edit_project_bp.edit_project', slug=project.slug) }}">⚙️ Edit General Preferences</a></li>
+            <li><a href="{{ url_for('chapters_bp.chapters_list', slug=project.slug) }}">📚 Manage Chapters</a></li>
+            <li><a href="{{ url_for('social_media_bp.social_media_management', slug=project.slug) }}">🌐 Manage Social Media</a></li>
+            <li><a href="{{ url_for('choose_license_bp.choose_project_license', slug=project.slug) }}">⚖️ Choose Project License</a></li>
+            <li><a href="{{ url_for('layout_bp.project_layout', slug=project.slug) }}">🎨 Configure Layout</a></li>
             <!-- Other options will go here -->
         </ul>
     </main>

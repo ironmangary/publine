@@ -20,8 +20,8 @@
                 <td>{{ project.title }}</td>
                 <td>{{ project.author }}</td>
                 <td>
-                    <a href="{{ url_for('project_dashboard', slug=project.slug) }}">Open Project</a> |
-                    <form action="/delete_project/{{ project.slug }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete project \'{{ project.title }}\'? This action cannot be undone.');">
+                    <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}">Open Project</a> |
+                    <form action="{{ url_for('projects_bp.delete_project_route', slug=project.slug) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete project \'{{ project.title }}\'? This action cannot be undone.');">
                         <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">Delete</button>
                     </form>
                 </td>
@@ -32,6 +32,7 @@
     {% else %}
     <p>No projects found. Create a new project to get started!</p>
     {% endif %}
+    <p><a href="{{ url_for('projects_bp.new_project') }}">Create New Project</a></p>
     <p><a href="/">Return to main menu</a></p>
 </body>
 </html>

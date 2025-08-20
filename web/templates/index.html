@@ -6,8 +6,8 @@
 <body>
     <h1>Welcome to Publine</h1>
     <p>Your personal publishing pipeline</p>
-    <a href="{{ url_for('new_project') }}">Create new project</a><br>
-    <a href="{{ url_for('manage_projects') }}">Manage existing project</a><br>
-    <a href="{{ url_for('manage_licenses') }}">Manage Global Licenses</a><br>
+    <a href="{{ url_for('projects_bp.new_project') }}">Create new project</a><br>
+    <a href="{{ url_for('projects_bp.manage_projects') }}">Manage existing project</a><br>
+    <a href="{{ url_for('licenses_bp.manage_licenses') }}">Manage Global Licenses</a><br>
     <a href="#">Exit</a> </body>
 </html>

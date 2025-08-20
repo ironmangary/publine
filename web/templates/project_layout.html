@@ -25,9 +25,9 @@
 
         <h3>Output Formats</h3>
         <ul class="option-list">
-            <li><a href="{{ url_for('html_layout', slug=project.slug) }}">📄 HTML Layout</a></li>
-            <li><a href="{{ url_for('epub_layout', slug=project.slug) }}">📖 EPUB Layout</a></li>
-            <li><a href="{{ url_for('pdf_layout', slug=project.slug) }}">🖨️ PDF Layout</a></li>
+            <li><a href="{{ url_for('layout_bp.html_layout', slug=project.slug) }}">📄 HTML Layout</a></li>
+            <li><a href="{{ url_for('layout_bp.epub_layout', slug=project.slug) }}">📖 EPUB Layout</a></li>
+            <li><a href="{{ url_for('layout_bp.pdf_layout', slug=project.slug) }}">🖨️ PDF Layout</a></li>
         </ul>
     </main>
 
