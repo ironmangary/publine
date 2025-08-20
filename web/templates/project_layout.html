@@ -1,40 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ project.title }} - Layout Configuration</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>{{ project.title }}</h1>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="{{ url_for('project_dashboard', slug=project.slug) }}">Back to Dashboard</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+{% extends "base.html" %}
+{% block title %}{{ project.title }} - Layout Configuration{% endblock %}
 
-    <main class="container">
-        <h2>Layout Configuration</h2>
-        <p>Choose which aspects of your project's output layout to configure.</p>
+{% block content %}
+<div class="container mt-4">
+    <h2>Layout Configuration</h2>
+    <p>Choose which aspects of your project's output layout to configure.</p>
 
-        <h3>Output Formats</h3>
-        <ul class="option-list">
-            <li><a href="{{ url_for('layout_bp.html_layout', slug=project.slug) }}">📄 HTML Layout</a></li>
-            <li><a href="{{ url_for('layout_bp.epub_layout', slug=project.slug) }}">📖 EPUB Layout</a></li>
-            <li><a href="{{ url_for('layout_bp.pdf_layout', slug=project.slug) }}">🖨️ PDF Layout</a></li>
-        </ul>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Your App</p>
-        </div>
-    </footer>
-</body>
-</html>
+    <h3>Output Formats</h3>
+    <ul class="option-list">
+        <li><a href="{{ url_for('layout_bp.html_layout', slug=project.slug) }}">📄 HTML Layout</a></li>
+        <li><a href="{{ url_for('layout_bp.epub_layout', slug=project.slug) }}">📖 EPUB Layout</a></li>
+        <li><a href="{{ url_for('layout_bp.pdf_layout', slug=project.slug) }}">🖨️ PDF Layout</a></li>
+    </ul>
+    <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}

@@ -1,12 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Manage Projects</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Manage Projects{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
     <h1>Manage Existing Projects</h1>
+    {% include 'flash_messages.html' %}
     {% if projects %}
-    <table>
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Title</th>
@@ -20,9 +21,9 @@
                 <td>{{ project.title }}</td>
                 <td>{{ project.author }}</td>
                 <td>
-                    <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}">Open Project</a> |
+                    <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}" class="btn btn-primary btn-sm">Open Project</a>
                     <form action="{{ url_for('projects_bp.delete_project_route', slug=project.slug) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete project \'{{ project.title }}\'? This action cannot be undone.');">
-                        <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </td>
             </tr>
@@ -30,9 +31,11 @@
         </tbody>
     </table>
     {% else %}
-    <p>No projects found. Create a new project to get started!</p>
+    <div class="alert alert-info">
+        <p>No projects found. <a href="{{ url_for('projects_bp.new_project') }}">Create a new project</a> to get started!</p>
+    </div>
     {% endif %}
-    <p><a href="{{ url_for('projects_bp.new_project') }}">Create New Project</a></p>
-    <p><a href="/">Return to main menu</a></p>
-</body>
-</html>
+    <a href="{{ url_for('projects_bp.new_project') }}" class="btn btn-primary">Create New Project</a>
+    <a href="/" class="btn btn-secondary">Return to main menu</a>
+</div>
+{% endblock %}

@@ -1,77 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Project - {{ project.title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Edit Project: {{ project.title }}</h1>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/manage_projects">Back to Projects</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+{% extends "base.html" %}
 
-    <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-                </ul>
+{% block title %}Edit Project - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Project: {{ project.story_title }}</h1>
+        <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}" class="btn btn-secondary">Back to Project</a>
+    </div>
+
+    {% include 'flash_messages.html' %}
+
+    {% if project %}
+    <form action="{{ url_for('edit_project_bp.edit_project', slug=project.slug) }}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="form-label">Project Title:</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ project.story_title }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="author" class="form-label">Author:</label>
+            <input type="text" class="form-control" id="author" name="author" value="{{ project.story_author }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="copyright_year" class="form-label">Copyright Year:</label>
+            <input type="number" class="form-control" id="copyright_year" name="copyright_year" value="{{ project.copyright_year }}" required min="1900" max="2100">
+        </div>
+
+        <div class="mb-3">
+            <label for="cover_image" class="form-label">Default Cover Image (Optional):</label>
+            <input type="file" class="form-control" id="cover_image" name="cover_image" accept="image/png, image/jpeg, image/gif, image/svg+xml">
+            {% if project.cover_image %}
+                <div class="form-text">Current: {{ project.cover_image }} (Uploading a new file will replace this)</div>
             {% endif %}
-        {% endwith %}
-
-        {% if project %}
-        <form action="{{ url_for('edit_project_bp.edit_project', slug=project.slug) }}" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="title">Project Title:</label>
-                <input type="text" id="title" name="title" value="{{ project.story_title }}" required>
-            </div>
-            <div class="form-group">
-                <label for="author">Author:</label>
-                <input type="text" id="author" name="author" value="{{ project.story_author }}" required>
-            </div>
-            <div class="form-group">
-                <label for="copyright_year">Copyright Year:</label>
-                <input type="number" id="copyright_year" name="copyright_year" value="{{ project.copyright_year }}" required min="1900" max="2100">
-            </div>
-
-            <div class="form-group">
-                <label for="cover_image">Default Cover Image (Optional):</label>
-                <input type="file" id="cover_image" name="cover_image" accept="image/png, image/jpeg, image/gif, image/svg+xml">
-                {% if project.cover_image %}
-                    <p class="current-file-info">Current: {{ project.cover_image }} (Uploading a new file will replace this)</p>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="custom_css">Default Custom CSS (Optional):</label>
-                <input type="file" id="custom_css" name="custom_css" accept=".css">
-                {% if project.custom_css %}
-                    <p class="current-file-info">Current: {{ project.custom_css }} (Uploading a new file will replace this)</p>
-                {% endif %}
-            </div>
-
-            <button type="submit" class="button primary">Update Project</button>
-        </form>
-        {% else %}
-        <p>Project not found.</p>
-        {% endif %}
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Your App</p>
         </div>
-    </footer>
-</body>
-</html>
+
+        <div class="mb-3">
+            <label for="custom_css" class="form-label">Default Custom CSS (Optional):</label>
+            <input type="file" class="form-control" id="custom_css" name="custom_css" accept=".css">
+            {% if project.custom_css %}
+                <div class="form-text">Current: {{ project.custom_css }} (Uploading a new file will replace this)</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Project</button>
+    </form>
+    {% else %}
+    <div class="alert alert-warning">Project not found.</div>
+    {% endif %}
+</div>
+{% endblock %}

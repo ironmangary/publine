@@ -15,8 +15,10 @@
             <h3 class="mb-0"><a href="{{ url_for('index') }}" class="text-white text-decoration-none">PubLine</a></h3>
             <nav>
                 <ul class="nav">
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('projects_bp.new_project') }}">New Project</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('projects_bp.manage_projects') }}">Manage Projects</a></li>
-                    <!-- Add more global navigation links here if needed -->
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('licenses_bp.manage_licenses') }}">Global Licenses</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('index') }}">Exit</a></li>
                 </ul>
             </nav>
         </div>
@@ -28,7 +30,7 @@
 
     <footer class="bg-light text-center py-3 mt-5">
         <div class="container">
-            <p>&copy; 2024 PubLine</p>
+            <p>&copy; 2025 PubLine</p>
         </div>
     </footer>
 

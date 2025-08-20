@@ -1,70 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Chapter - {{ project.title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Add Chapter for {{ project.title }}</h1>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="{{ url_for('chapters_bp.chapters_list', slug=project.slug) }}">Back to Chapters</a></li>
-                </ul>
-            </nav>
+{% extends "base.html" %}
+
+{% block title %}Add Chapter - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Add Chapter for {{ project.title }}</h1>
+
+    {% include 'flash_messages.html' %}
+
+    <form action="{{ url_for('chapters_bp.add_chapter', slug=project.slug) }}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="number" class="form-label">Chapter Number:</label>
+            <input type="number" class="form-control" id="number" name="number" required min="1">
         </div>
-    </header>
-
-    <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
-        <form action="{{ url_for('chapters_bp.add_chapter', slug=project.slug) }}" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="number">Chapter Number:</label>
-                <input type="number" id="number" name="number" required min="1">
-            </div>
-            <div class="form-group">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
-            </div>
-            <div class="form-group">
-                <label for="discussion">Discussion Link (optional):</label>
-                <input type="url" id="discussion" name="discussion">
-            </div>
-            <div class="form-group">
-                <label for="import_format">Import Format:</label>
-                <select id="import_format" name="import_format">
-                    <option value="html">HTML</option>
-                    <option value="txt">Plaintext (.txt)</option>
-                    <option value="docx">Word (.docx)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="chapter_file">Upload Chapter File (optional, will overwrite existing):</label>
-                <input type="file" id="chapter_file" name="chapter_file" accept=".html,.txt,.docx">
-                <small>If left blank, an empty HTML file will be created.</small>
-            </div>
-
-            <button type="submit" class="button primary">Add Chapter</button>
-        </form>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Your App</p>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title:</label>
+            <input type="text" class="form-control" id="title" name="title" required>
         </div>
-    </footer>
-</body>
-</html>
+        <div class="mb-3">
+            <label for="discussion" class="form-label">Discussion Link (optional):</label>
+            <input type="url" class="form-control" id="discussion" name="discussion">
+        </div>
+        <div class="mb-3">
+            <label for="import_format" class="form-label">Import Format:</label>
+            <select class="form-select" id="import_format" name="import_format">
+                <option value="html">HTML</option>
+                <option value="txt">Plaintext (.txt)</option>
+                <option value="docx">Word (.docx)</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="chapter_file" class="form-label">Upload Chapter File (optional, will overwrite existing):</label>
+            <input type="file" class="form-control" id="chapter_file" name="chapter_file" accept=".html,.txt,.docx">
+            <div class="form-text">If left blank, an empty HTML file will be created.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Chapter</button>
+        <a href="{{ url_for('chapters_bp.chapters_list', slug=project.slug) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

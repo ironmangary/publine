@@ -1,38 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Chapters - {{ project.title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Manage Chapters for {{ project.title }}</h1>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}">Back to Project</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+{% extends "base.html" %}
 
-    <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
+{% block title %}Manage Chapters - {{ project.title }}{% endblock %}
 
-        <h2>Existing Chapters</h2>
-        {% if chapters %}
-            <table class="data-table">
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Chapters for {{ project.title }}</h1>
+        <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}" class="btn btn-secondary">Back to Project</a>
+    </div>
+
+    {% include 'flash_messages.html' %}
+
+    <div class="mb-3">
+        <a href="{{ url_for('chapters_bp.add_chapter', slug=project.slug) }}" class="btn btn-primary">Add New Chapter</a>
+    </div>
+
+    {% if chapters %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -51,35 +36,27 @@
                     <tr>
                         <td>{{ chapter.number }}</td>
                         <td>{{ chapter.title }}</td>
-                        <td>{{ chapter.discussion or '-' }}</td>
+                        <td>{% if chapter.discussion %}<a href="{{ chapter.discussion }}" target="_blank">Link</a>{% else %}-{% endif %}</td>
                         <td>{{ chapter.import_format }}</td>
                         <td>{{ chapter.import_source.split('/')[-1] if chapter.import_source else '-' }}</td>
                         <td>{{ 'Yes' if chapter.exclude_from_epub else 'No' }}</td>
                         <td>{{ 'Yes' if chapter.exclude_from_pdf else 'No' }}</td>
                         <td>{{ 'Yes' if chapter.draft else 'No' }}</td>
-                        <td class="actions">
-                            <a href="{{ url_for('chapters_bp.edit_chapter', slug=project.slug, chapter_num=chapter.number) }}" class="button small">Edit</a>
+                        <td>
+                            <a href="{{ url_for('chapters_bp.edit_chapter', slug=project.slug, chapter_num=chapter.number) }}" class="btn btn-sm btn-primary">Edit</a>
                             <form action="{{ url_for('chapters_bp.delete_chapter', slug=project.slug, chapter_num=chapter.number) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete chapter {{ chapter.number }} ({{ chapter.title }})?');">
-                                <button type="submit" class="button small danger">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            <p>No chapters found for this project.</p>
-        {% endif %}
-
-        <p class="add-button-container">
-            <a href="{{ url_for('chapters_bp.add_chapter', slug=project.slug) }}" class="button primary">Add New Chapter</a>
-        </p>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Your App</p>
         </div>
-    </footer>
-</body>
-</html>
+    {% else %}
+        <div class="alert alert-info">
+            <p>No chapters found for this project. Click "Add New Chapter" to get started.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

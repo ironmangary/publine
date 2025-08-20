@@ -1,87 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Chapter {{ chapter.number }} - {{ project.title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Edit Chapter {{ chapter.number }} for {{ project.title }}</h1>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="{{ url_for('chapters_bp.chapters_list', slug=project.slug) }}">Back to Chapters</a></li>
-                </ul>
-            </nav>
+{% extends "base.html" %}
+
+{% block title %}Edit Chapter {{ chapter.number }} - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Edit Chapter {{ chapter.number }} for {{ project.title }}</h1>
+
+    {% include 'flash_messages.html' %}
+
+    {% if chapter %}
+    <form action="{{ url_for('chapters_bp.edit_chapter', slug=project.slug, chapter_num=chapter.number) }}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="number" class="form-label">Chapter Number:</label>
+            <input type="number" class="form-control" id="number" name="number" value="{{ chapter.number }}" readonly>
         </div>
-    </header>
-
-    <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
-        {% if chapter %}
-        <form action="{{ url_for('chapters_bp.edit_chapter', slug=project.slug, chapter_num=chapter.number) }}" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="number">Chapter Number:</label>
-                <input type="number" id="number" name="number" value="{{ chapter.number }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" value="{{ chapter.title }}" required>
-            </div>
-            <div class="form-group">
-                <label for="discussion">Discussion Link (optional):</label>
-                <input type="url" id="discussion" name="discussion" value="{{ chapter.discussion or '' }}">
-            </div>
-            <div class="form-group">
-                <label for="import_format">Import Format:</label>
-                <select id="import_format" name="import_format">
-                    <option value="html" {% if (chapter.import_format or 'html') == 'html' %}selected{% endif %}>HTML</option>
-                    <option value="txt" {% if chapter.import_format == 'txt' %}selected{% endif %}>Plaintext (.txt)</option>
-                    <option value="docx" {% if chapter.import_format == 'docx' %}selected{% endif %}>Word (.docx)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="chapter_file">Upload New Chapter File (optional, will overwrite existing):</label>
-                <input type="file" id="chapter_file" name="chapter_file" accept=".html,.txt,.docx">
-                <small>Current file: {{ chapter.import_source.split('/')[-1] if chapter.import_source else 'None' }}</small>
-            </div>
-
-            <div class="form-group checkbox-group">
-                <input type="checkbox" id="exclude_from_epub" name="exclude_from_epub" {% if chapter.exclude_from_epub %}checked{% endif %}>
-                <label for="exclude_from_epub">Exclude from EPUB</label>
-            </div>
-            <div class="form-group checkbox-group">
-                <input type="checkbox" id="exclude_from_pdf" name="exclude_from_pdf" {% if chapter.exclude_from_pdf %}checked{% endif %}>
-                <label for="exclude_from_pdf">Exclude from PDF</label>
-            </div>
-            <div class="form-group checkbox-group">
-                <input type="checkbox" id="draft" name="draft" {% if chapter.draft %}checked{% endif %}>
-                <label for="draft">Mark as Draft</label>
-            </div>
-
-            <button type="submit" class="button primary">Update Chapter</button>
-        </form>
-        {% else %}
-        <p>Chapter not found.</p>
-        {% endif %}
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Your App</p>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title:</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ chapter.title }}" required>
         </div>
-    </footer>
-</body>
-</html>
+        <div class="mb-3">
+            <label for="discussion" class="form-label">Discussion Link (optional):</label>
+            <input type="url" class="form-control" id="discussion" name="discussion" value="{{ chapter.discussion or '' }}">
+        </div>
+        <div class="mb-3">
+            <label for="import_format" class="form-label">Import Format:</label>
+            <select class="form-select" id="import_format" name="import_format">
+                <option value="html" {% if (chapter.import_format or 'html') == 'html' %}selected{% endif %}>HTML</option>
+                <option value="txt" {% if chapter.import_format == 'txt' %}selected{% endif %}>Plaintext (.txt)</option>
+                <option value="docx" {% if chapter.import_format == 'docx' %}selected{% endif %}>Word (.docx)</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="chapter_file" class="form-label">Upload New Chapter File (optional, will overwrite existing):</label>
+            <input type="file" class="form-control" id="chapter_file" name="chapter_file" accept=".html,.txt,.docx">
+            <div class="form-text">Current file: {{ chapter.import_source.split('/')[-1] if chapter.import_source else 'None' }}</div>
+        </div>
+
+        <div class="form-check mb-2">
+            <input type="checkbox" class="form-check-input" id="exclude_from_epub" name="exclude_from_epub" {% if chapter.exclude_from_epub %}checked{% endif %}>
+            <label class="form-check-label" for="exclude_from_epub">Exclude from EPUB</label>
+        </div>
+        <div class="form-check mb-2">
+            <input type="checkbox" class="form-check-input" id="exclude_from_pdf" name="exclude_from_pdf" {% if chapter.exclude_from_pdf %}checked{% endif %}>
+            <label class="form-check-label" for="exclude_from_pdf">Exclude from PDF</label>
+        </div>
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="draft" name="draft" {% if chapter.draft %}checked{% endif %}>
+            <label class="form-check-label" for="draft">Mark as Draft</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Chapter</button>
+        <a href="{{ url_for('chapters_bp.chapters_list', slug=project.slug) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+    {% else %}
+    <div class="alert alert-warning">Chapter not found.</div>
+    {% endif %}
+</div>
+{% endblock %}
