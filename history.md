@@ -2,6 +2,16 @@
 
 ## Detaileddevelopment history
 
+## v1.0 Alpha 7 (2025-08-20)
+
+Code drafted with Gemini 2.5 Flash in Aider and Gemini 2.5 Pro in Gemini CLI.
+
+- Created a global license manager
+- Added a Layout Manager, porting HTML preferences and creating new EPUB and PDF preferences menus
+- Added options to upload a cover image and custom CSS to the Edit Project Menu
+- Ported the project license picker to the web UI
+- Streamlined the web UI with a base.html using Jinja2
+
 ## v1.0 Alpha 6 – Web UI Transition Begins (2025-08-11)
 
 Publine enters a new phase with the initial port of CLI features to a Flask-based web UI. This release marks the beginning of a modular, accessible interface designed to empower writers and creators with clarity and control within a familiar web user interface.
