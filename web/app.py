@@ -44,3 +44,7 @@ def allowed_chapter_file(filename):
 def index():
     return render_template("index.html")
 
+@app.route("/exit", methods=["GET"])
+def exit_app():
+    return render_template("exit.html")
+
