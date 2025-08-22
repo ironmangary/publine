@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Publish Output - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Publish Output: {{ project.title }}</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages my-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Publish Static HTML Web Site
+                </div>
+                <div class="card-body">
+                    <p>Generate a static HTML version of your project, suitable for web hosting.</p>
+                    <form action="{{ url_for('publish_bp.publish_output_menu', slug=project.slug) }}" method="post">
+                        <button type="submit" name="action" value="publish_html" class="btn btn-primary">Publish HTML</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Publish EPUB
+                </div>
+                <div class="card-body">
+                    <p>Create an EPUB e-book file, compatible with most e-readers.</p>
+                    <form action="{{ url_for('publish_bp.publish_output_menu', slug=project.slug) }}" method="post">
+                        <button type="submit" name="action" value="publish_epub" class="btn btn-primary">Publish EPUB</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Publish PDF files
+                </div>
+                <div class="card-body">
+                    <p>Generate PDF documents of your project, ideal for printing or distribution.</p>
+                    <form action="{{ url_for('publish_bp.publish_output_menu', slug=project.slug) }}" method="post">
+                        <button type="submit" name="action" value="publish_pdf" class="btn btn-primary">Publish PDF</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Publish All Formats
+                </div>
+                <div class="card-body">
+                    <p>Generate HTML, EPUB, and PDF files simultaneously.</p>
+                    <form action="{{ url_for('publish_bp.publish_output_menu', slug=project.slug) }}" method="post">
+                        <button type="submit" name="action" value="publish_all" class="btn btn-success">Publish All</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

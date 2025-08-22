@@ -9,7 +9,7 @@ from web.src import social_media as web_social_media
 from web.src import layout_manager as web_layout_manager # For layout features
 from core.src.utils import load_prefs, save_prefs # For project preferences
 from web.src.licenses import load_license_definitions, save_license_definitions
-from web.src.chapter_utils import get_includes_path # To get the includes path for file uploads
+from web.src.chapter_utils import get_includes_path, ALLOWED_CHAPTER_EXTENSIONS # To get the includes path for file uploads
 from web.routes.edit_project import edit_project_bp # Import the new blueprint
 from web.routes.choose_license import choose_license_bp # Import the new blueprint
 from web.routes.projects import projects_bp # Import the new projects blueprint
@@ -17,6 +17,7 @@ from web.routes.layout import layout_bp # Import the new layout blueprint
 from web.routes.social_media import social_media_bp # Import the new social media blueprint
 from web.routes.chapters import chapters_bp # Import the new chapters blueprint
 from web.routes.licenses import licenses_bp # Import the new licenses blueprint
+from web.routes.publish import publish_bp # Import the new publish blueprint
 
 UPLOAD_FOLDER = 'uploads' # Temporary folder for uploaded files
 
@@ -35,6 +36,7 @@ app.register_blueprint(layout_bp) # Register the new layout blueprint
 app.register_blueprint(social_media_bp) # Register the new social media blueprint
 app.register_blueprint(chapters_bp) # Register the new chapters blueprint
 app.register_blueprint(licenses_bp) # Register the new licenses blueprint
+app.register_blueprint(publish_bp) # Register the new publish blueprint
 
 def allowed_chapter_file(filename):
     return '.' in filename and \
