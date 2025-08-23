@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Publish HTML - {{ project.title }}{% endblock %}
+{% block title %}Publish PDF - {{ project.title }}{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1 class="my-4">Publish HTML: {{ project.title }}</h1>
+    <h1 class="my-4">Publish PDF: {{ project.title }}</h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -18,12 +18,12 @@
 
     <div class="card mb-4">
         <div class="card-header">
-            Confirm HTML Generation
+            Confirm PDF Generation
         </div>
         <div class="card-body">
-            <p>This will generate a static HTML website from your project's content.</p>
-            <form action="{{ url_for('publish_bp.publish_html', slug=project.slug) }}" method="post">
-                <button type="submit" class="btn btn-primary">Generate HTML</button>
+            <p>This will generate a PDF file from your project's content.</p>
+            <form action="{{ url_for('publish_bp.publish_pdf', slug=project.slug) }}" method="post">
+                <button type="submit" class="btn btn-primary">Generate PDF</button>
             </form>
         </div>
     </div>
