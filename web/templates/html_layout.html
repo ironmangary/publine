@@ -80,6 +80,18 @@
                 </label>
             </li>
         </ul>
+
+        <h3>Index Page Features</h3>
+        <ul class="feature-list">
+            <li>
+                <label>
+                    <input type="checkbox" name="html_include_blurb" value="on" {{ 'checked' if display_features.get('html_include_blurb') else '' }}>
+                    Include Blurb on Index Page
+                </label>
+                <p class="text-muted">Supports plain text and Markdown.</p>
+                <textarea name="html_blurb_content" class="form-control" rows="5" placeholder="Enter blurb content here...">{{ blurb_content if blurb_content else '' }}</textarea>
+            </li>
+        </ul>
         
         <button type="submit" class="button">Save HTML Layout Settings</button>
     </form>

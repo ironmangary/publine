@@ -1,8 +1,9 @@
 import os
 import shutil
 import json
+import markdown # For converting markdown blurb to HTML
 from core.src.utils import load_prefs, load_json
-from web.src.chapter_utils import format_chapter_heading # Adjusted for web context
+from web.src.chapter_utils import format_chapter_heading, get_includes_path # Adjusted for web context, added get_includes_path
 from core.src.social_utils import load_links
 
 # Define default.css file for projects (moved from cli/src/html_output.py)
@@ -341,6 +342,20 @@ def create_html_index_page(chapters, prefs, project_path):
     header_block = html_header(prefs, relative_path_to_root="")
     footer_block = html_footer(prefs, project_path=project_path, relative_path_to_root="")
 
+    blurb_html = ""
+    display_features = prefs.get("display_features", {})
+    if display_features.get("html_include_blurb", False):
+        includes_path = get_includes_path(project_path)
+        blurb_filepath = os.path.join(includes_path, "blurb.md")
+        if os.path.exists(blurb_filepath):
+            with open(blurb_filepath, "r", encoding="utf-8") as f:
+                blurb_markdown = f.read()
+            # Convert markdown to HTML. The markdown library by default sanitizes by escaping HTML.
+            blurb_html = f'<div class="index-blurb">{markdown.markdown(blurb_markdown)}</div><br>'
+            print(f"✅ Included blurb from {blurb_filepath}")
+        else:
+            print(f"⚠️ 'html_include_blurb' is enabled but blurb file not found: {blurb_filepath}")
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -351,7 +366,8 @@ def create_html_index_page(chapters, prefs, project_path):
 <body>
 {header_block}
 <br>
-<main><center><h3>Table of Contents</h3></center>
+<main>
+{blurb_html}<center><h3>Table of Contents</h3></center>
 <ul>{toc}</ul>
 </main>
 <br>
