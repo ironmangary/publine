@@ -2,6 +2,15 @@
 
 ## Detaileddevelopment history
 
+## v1.0 Alpha 8 (2025-08-25)
+
+This release finalizes the migration of Publine's publishing features to the web interface, making the Web UI fully functional and self-contained.
+
+### Highlights
+
+- Added a Publish option under the Project Dashboard, which ports the publishing of static HTML, EPUB, and PDF from the CLI
+- Added an "Index Page" to the Layout preferences menu, with the first option being a user defined blurb, which can be written in either markdown or text and will appear above the Table of Contents
+
 ## v1.0 Alpha 7 (2025-08-20)
 
 Code drafted with Gemini 2.5 Flash in Aider and Gemini 2.5 Pro in Gemini CLI.
