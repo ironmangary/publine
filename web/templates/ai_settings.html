@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}AI Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>AI Settings</h1>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Welcome</a>
+    </div>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="api_key" class="form-label">Global API Key</label>
+            <input type="password" class="form-control" id="api_key" name="api_key"
+                   value="{{ settings.AI_API_KEY }}" placeholder="Enter your AI API Key">
+            <div class="form-text">
+                This key will be used for all AI-powered features across your projects.
+                It will be stored locally in your `.env` file and is not publicly exposed.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="ai_model_select" class="form-label">AI Model</label>
+            <select class="form-select" id="ai_model_select" name="ai_model_select" onchange="toggleCustomAIFields()">
+                <option value="">-- Select an AI Model --</option>
+                {% for provider in providers %}
+                    <optgroup label="{{ provider.name }}">
+                        {% for model in provider.models %}
+                            <option value="{{ model.id }}"
+                                    {% if model.is_selected %}selected{% endif %}>
+                                {{ model.name }}
+                            </option>
+                        {% endfor %}
+                    </optgroup>
+                {% endfor %}
+                <option value="other" {% if is_other_model_selected %}selected{% endif %}>Other (specify below)</option>
+            </select>
+        </div>
+
+        <div id="custom_ai_fields" class="mb-3" style="display: none;">
+            <div class="mb-3">
+                <label for="custom_ai_provider" class="form-label">Custom AI Provider Name</label>
+                <input type="text" class="form-control" id="custom_ai_provider" name="custom_ai_provider"
+                       value="{% if is_other_model_selected %}{{ settings.AI_PROVIDER }}{% endif %}"
+                       placeholder="e.g., MyCustomAI">
+            </div>
+            <div class="mb-3">
+                <label for="custom_ai_model" class="form-label">Custom AI Model Name</label>
+                <input type="text" class="form-control" id="custom_ai_model" name="custom_ai_model"
+                       value="{% if is_other_model_selected %}{{ settings.AI_MODEL }}{% endif %}"
+                       placeholder="e.g., my-custom-model-v1">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="temperature" class="form-label">Temperature (Creativity)</label>
+            <input type="number" class="form-control" id="temperature" name="temperature"
+                   value="{{ settings.AI_TEMPERATURE }}" min="0" max="1" step="0.1">
+            <div class="form-text">
+                Controls the randomness of the AI's output. Higher values (e.g., 0.8) mean more creative, lower values (e.g., 0.2) mean more focused.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="max_tokens" class="form-label">Max Tokens (Response Length)</label>
+            <input type="number" class="form-control" id="max_tokens" name="max_tokens"
+                   value="{{ settings.AI_MAX_TOKENS }}" min="1" step="1">
+            <div class="form-text">
+                The maximum number of tokens (words/characters) in the AI's response.
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleCustomAIFields(); // Run on page load to set initial state
+    });
+
+    function toggleCustomAIFields() {
+        const select = document.getElementById('ai_model_select');
+        const customFieldsDiv = document.getElementById('custom_ai_fields');
+        if (select.value === 'other') {
+            customFieldsDiv.style.display = 'block';
+        } else {
+            customFieldsDiv.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

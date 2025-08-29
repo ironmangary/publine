@@ -1,6 +1,10 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '.env'))
 
 from web.src.manage_projects import get_projects_list, delete_project, get_single_project_details, update_project_details
 from web.src.new_project import create_project_files
@@ -18,6 +22,9 @@ from web.routes.social_media import social_media_bp # Import the new social medi
 from web.routes.chapters import chapters_bp # Import the new chapters blueprint
 from web.routes.licenses import licenses_bp # Import the new licenses blueprint
 from web.routes.publish import publish_bp # Import the new publish blueprint
+from web.routes.project_tools import project_tools_bp # Import the new project tools blueprint
+from web.routes.chapter_tools import chapter_tools_bp # Import the new chapter tools blueprint
+from web.routes.ai_settings import ai_settings_bp # Import the new AI Settings blueprint
 
 UPLOAD_FOLDER = 'uploads' # Temporary folder for uploaded files
 
@@ -37,6 +44,9 @@ app.register_blueprint(social_media_bp) # Register the new social media blueprin
 app.register_blueprint(chapters_bp) # Register the new chapters blueprint
 app.register_blueprint(licenses_bp) # Register the new licenses blueprint
 app.register_blueprint(publish_bp) # Register the new publish blueprint
+app.register_blueprint(project_tools_bp) # Register the new project tools blueprint
+app.register_blueprint(chapter_tools_bp) # Register the new chapter tools blueprint
+app.register_blueprint(ai_settings_bp) # Register the new AI Settings blueprint
 
 def allowed_chapter_file(filename):
     return '.' in filename and \
