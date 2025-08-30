@@ -4,14 +4,34 @@
 {% block content %}
 <div class="container mt-4">
     <h2>Chapter Tools for {{ project.title }}</h2>
-    <ul class="list-group">
+
+    <h3>Available Tools</h3>
+    <ul class="list-group mb-4">
         {% for tool in tools %}
         <li class="list-group-item">
-            {{ tool.name }} - <small>{{ tool.description }}</small>
-            <!-- Add a link/button here once actual functionality is implemented -->
+            <strong>{{ tool.name }}</strong> - <small>{{ tool.description }}</small>
         </li>
         {% endfor %}
     </ul>
+
+    <h3>Chapters</h3>
+    <div class="list-group">
+        {% if chapters %}
+            {% for chapter in chapters %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Chapter {{ chapter.number }}: {{ chapter.title }}</span>
+                <div>
+                    <a href="{{ url_for('chapter_tools_bp.summarize_chapter', slug=project.slug, chapter_num=chapter.number) }}" class="btn btn-info btn-sm">Summarize (AI)</a>
+                    <!-- Add other chapter-specific tool links here -->
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="list-group-item">No chapters found for this project.</div>
+        {% endif %}
+    </div>
+
+
     <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}" class="btn btn-secondary mt-3">Back to Project Dashboard</a>
 </div>
 {% endblock %}

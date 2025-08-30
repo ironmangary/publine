@@ -3,7 +3,7 @@ import json
 from werkzeug.utils import secure_filename
 from flask import current_app
 
-from core.src.importer import import_content
+from core.src.importer import import_content, html_to_plain_text
 from core.src.utils import load_json, save_json, load_prefs, save_prefs # load_prefs/save_prefs not directly used in CUD, but in ensure_cover_image
 
 ALLOWED_CHAPTER_EXTENSIONS = {'html', 'txt', 'docx'}
@@ -151,6 +151,58 @@ def delete_chapter(project_path, chapter_num, delete_file_confirm=False):
     chapters.remove(chapter_to_delete)
     save_chapters(chapters_path, chapters)
     return True, "Chapter removed successfully."
+
+def get_single_chapter_data(project_path, chapter_num):
+    """
+    Retrieves data for a single chapter.
+    """
+    chapters_path = get_chapters_path(project_path)
+    chapters = load_chapters(chapters_path)
+    return next((ch for ch in chapters if ch["number"] == chapter_num), None)
+
+def get_chapter_plain_text_content(project_path, chapter_num):
+    """
+    Retrieves the plain text content of a specific chapter.
+    Returns (chapter_title, chapter_plain_text) or raises an error.
+    """
+    chapters_path = get_chapters_path(project_path)
+    chapters = load_chapters(chapters_path)
+
+    chapter_data = next((ch for ch in chapters if ch["number"] == chapter_num), None)
+
+    if not chapter_data:
+        raise ValueError(f"Chapter {chapter_num} not found.")
+
+    chapter_title = chapter_data.get("title", f"Chapter {chapter_num}")
+    import_source_relative = chapter_data.get("import_source")
+    import_format = chapter_data.get("import_format")
+
+    if not import_source_relative:
+        return chapter_title, "" # Return empty if no source specified
+
+    full_source_path = os.path.join(project_path, import_source_relative)
+
+    if not os.path.exists(full_source_path):
+        raise FileNotFoundError(f"Chapter file not found: {full_source_path}")
+
+    # Use core.src.importer to get HTML content, then convert to plain text
+    html_content = import_content(full_source_path, import_format)
+    plain_text_content = html_to_plain_text(html_content)
+
+    return chapter_title, plain_text_content
+
+def save_chapter_summary(project_path, chapter_num, summary_content):
+    """
+    Saves the AI-generated summary to a Markdown file within the project's includes directory.
+    """
+    includes_path = get_includes_path(project_path)
+    os.makedirs(includes_path, exist_ok=True)
+    summary_filename = f"chapter_{chapter_num}_summary.md"
+    summary_file_path = os.path.join(includes_path, summary_filename)
+
+    with open(summary_file_path, "w", encoding="utf-8") as f:
+        f.write(summary_content)
+    return summary_file_path
 
 # The following functions are from original cli/src/chapter_utils.py but are not directly
 # called by the web chapter management logic as it is being built.

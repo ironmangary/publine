@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title }} - Summarize Chapter {{ chapter.number }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Summarize Chapter {{ chapter.number }}: {{ chapter.title }} (AI)</h2>
+    <p class="text-muted">Generate a concise summary of the chapter using AI. The summary will be 3-5 sentences, highlighting key events and tone.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('chapter_tools_bp.summarize_chapter', slug=project.slug, chapter_num=chapter.number) }}">
+        <div class="mb-3">
+            <button type="submit" name="trigger_summary" value="1" class="btn btn-primary">Generate AI Summary</button>
+            <a href="{{ url_for('chapter_tools_bp.chapter_tools_menu', slug=project.slug) }}" class="btn btn-secondary ms-2">Back to Chapter Tools</a>
+        </div>
+
+        {% if summary_text %}
+        <div class="mb-3">
+            <label for="summaryContent" class="form-label">AI Generated Summary (Review and Edit)</label>
+            <textarea class="form-control" id="summaryContent" name="edited_summary_content" rows="8">{{ summary_text }}</textarea>
+            <div class="form-text">
+                Summary will be saved to <code>{{ project.slug }}/{{ expected_summary_file_relative }}</code>.
+            </div>
+        </div>
+        <div class="mb-3">
+            <button type="submit" name="save_summary" value="1" class="btn btn-success">Save Summary</button>
+            <a href="{{ url_for('chapter_tools_bp.chapter_tools_menu', slug=project.slug) }}" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}
