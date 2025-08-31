@@ -21,8 +21,8 @@
             <div class="list-group-item d-flex justify-content-between align-items-center">
                 <span>Chapter {{ chapter.number }}: {{ chapter.title }}</span>
                 <div>
-                    <a href="{{ url_for('chapter_tools_bp.summarize_chapter', slug=project.slug, chapter_num=chapter.number) }}" class="btn btn-info btn-sm">Summarize (AI)</a>
-                    <!-- Add other chapter-specific tool links here -->
+                    <a href="{{ url_for('chapter_tools_bp.summarize_chapter', slug=project.slug, chapter_num=chapter.number) }}" class="btn btn-info btn-sm me-2">Summarize (AI)</a>
+                    <a href="{{ url_for('chapter_tools_bp.generate_social_post', slug=project.slug, chapter_num=chapter.number) }}" class="btn btn-primary btn-sm">Social Post (AI)</a>
                 </div>
             </div>
             {% endfor %}

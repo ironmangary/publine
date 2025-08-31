@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title }} - Generate Social Media Post for Chapter {{ chapter.number }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Generate Social Media Post (AI) for Chapter {{ chapter.number }}: {{ chapter.title }}</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Generate Post
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('chapter_tools_bp.generate_social_post', slug=project.slug, chapter_num=chapter.number) }}">
+                <div class="mb-3">
+                    <label for="tone" class="form-label">Tone:</label>
+                    <select class="form-select" id="tone" name="tone">
+                        {% for t in tones %}
+                        <option value="{{ t }}" {% if t == selected_tone %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="length" class="form-label">Length:</label>
+                    <select class="form-select" id="length" name="length">
+                        {% for l in lengths %}
+                        <option value="{{ l }}" {% if l == selected_length %}selected{% endif %}>{{ l }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" name="trigger_post" class="btn btn-primary">Generate Post</button>
+            </form>
+        </div>
+    </div>
+
+    {% if generated_post_content or error_message %}
+    <div class="card mb-4">
+        <div class="card-header">
+            Generated Social Media Post
+        </div>
+        <div class="card-body">
+            {% if error_message %}
+            <div class="alert alert-danger">{{ error_message }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('chapter_tools_bp.generate_social_post', slug=project.slug, chapter_num=chapter.number) }}">
+                <div class="mb-3">
+                    <label for="edited_post_content" class="form-label">Review and Edit:</label>
+                    <textarea class="form-control" id="edited_post_content" name="edited_post_content" rows="10">{{ generated_post_content }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">This post will be saved to: <code>{{ expected_post_file_relative }}</code></small>
+                </div>
+                <input type="hidden" name="selected_tone_hidden" value="{{ selected_tone }}">
+                <input type="hidden" name="selected_length_hidden" value="{{ selected_length }}">
+                <button type="submit" name="save_post" class="btn btn-success me-2">Save Post</button>
+                <a href="{{ url_for('chapter_tools_bp.chapter_tools_menu', slug=project.slug) }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <a href="{{ url_for('chapter_tools_bp.chapter_tools_menu', slug=project.slug) }}" class="btn btn-secondary mt-3">Back to Chapter Tools</a>
+</div>
+{% endblock %}
