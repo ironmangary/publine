@@ -2,6 +2,24 @@
 
 ## Detaileddevelopment history
 
+## v1.0 Alpha 9 (2025-09-02)
+
+This version of Publine introduces AI tools and will likely be the last alpha version. There is a *Project Tools* menu that is only a stub for now, but you can play around with *Chapter Summaries* and *Social Media Posts* created by AI from within the *Chapter Tools* menu.
+
+### Highlights
+
+- **AI Settings Menu**  
+  Added a global configuration panel for AI integration. Users can now set their API key, select a model, and adjust generation parameters like temperature and max tokens. This lays the foundation for future AI-powered features across Publine.
+
+- **Chapter Tools: Summarize Chapter (AI)**  
+  Introduced an AI-powered summarization tool that reads chapter content and generates a concise 3–5 sentence summary. Results are editable and saved to the `includes` directory for reuse.
+
+- **Chapter Tools: Generate Social Media Post (AI)**  
+  Added a promotional post generator with customizable tone and length. Supports short-form platforms (X, Bluesky) and long-form platforms (Facebook, LinkedIn). Posts are editable and saved to `includes`.
+
+- **Project Tools Menu (Stub)**  
+  Added a placeholder for future project-level AI tools, including story synopsis and blurb generation. Currently non-functional but structurally ready.
+
 ## v1.0 Alpha 8 (2025-08-25)
 
 This release finalizes the migration of Publine's publishing features to the web interface, making the Web UI fully functional and self-contained.
