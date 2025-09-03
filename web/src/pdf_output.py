@@ -1,12 +1,21 @@
 import os
 from pathlib import Path
-from weasyprint import HTML, CSS
 import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def build_pdf(project_path, prefs, chapters):
+    if not prefs.get("pdf_enabled"):
+        logging.info("PDF generation is disabled for this project.")
+        return None
+
+    try:
+        from weasyprint import HTML, CSS
+    except ImportError:
+        logging.error("WeasyPrint is not installed. Please see documentation for installation instructions.")
+        return None
+
     project_path = Path(project_path)
     pdf_prefs = prefs.get("pdf_layout", {})
 

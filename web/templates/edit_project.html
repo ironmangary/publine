@@ -42,6 +42,15 @@
             {% endif %}
         </div>
 
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="pdf_enabled" name="pdf_enabled" {% if project.pdf_enabled %}checked{% endif %}>
+            <label class="form-check-label" for="pdf_enabled">Enable PDF Generation</label>
+            <div class="form-text">
+                Note: Enabling PDF generation on Windows requires installing GTK+ or similar dependencies for WeasyPrint. 
+                <a href="https://weasyprint.readthedocs.io/en/stable/install.html#windows" target="_blank">See WeasyPrint documentation for details.</a>
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary">Update Project</button>
     </form>
     {% else %}

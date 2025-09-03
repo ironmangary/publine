@@ -30,6 +30,7 @@ def edit_project(slug):
         new_title = request.form["title"]
         new_author = request.form["author"]
         new_copyright_year = request.form["copyright_year"]
+        pdf_enabled = request.form.get('pdf_enabled') == 'on'
 
         cover_image_file = None
         if 'cover_image' in request.files:
@@ -53,7 +54,7 @@ def edit_project(slug):
 
         success, message = update_project_details(
             slug, new_title, new_author, new_copyright_year,
-            cover_image_file, custom_css_file
+            pdf_enabled, cover_image_file, custom_css_file
         )
         if success:
             flash(message, "success")

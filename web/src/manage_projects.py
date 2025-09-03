@@ -65,7 +65,7 @@ def get_single_project_details(slug):
     except json.JSONDecodeError:
         return None
 
-def update_project_details(slug, new_title, new_author, new_copyright_year, cover_image_file=None, custom_css_file=None):
+def update_project_details(slug, new_title, new_author, new_copyright_year, pdf_enabled, cover_image_file=None, custom_css_file=None):
     """
     Updates the preferences for a specific project, including optional cover image and custom CSS.
     """
@@ -78,6 +78,7 @@ def update_project_details(slug, new_title, new_author, new_copyright_year, cove
         prefs["story_title"] = new_title
         prefs["story_author"] = new_author
         prefs["copyright_year"] = new_copyright_year
+        prefs["pdf_enabled"] = pdf_enabled
 
         # Handle cover image upload
         if cover_image_file:

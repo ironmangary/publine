@@ -38,7 +38,8 @@ def create_project():
         "story_title": title,
         "story_author": author,
         "copyright": copyright_year,
-        "cover_image": ""
+        "cover_image": "",
+        "pdf_enabled": False
     }
 
     with open(os.path.join(data_dir, "prefs.json"), "w", encoding="utf-8") as f:

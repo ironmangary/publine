@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
-from core.src.utils import load_json
-from weasyprint import HTML, CSS
+from core.src.utils import load_json, load_prefs
 import logging
 import json
 
@@ -10,6 +9,19 @@ logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %
 
 def build_pdf(project_path):
     project_path = Path(project_path)
+    prefs = load_prefs(project_path)
+
+    if not prefs.get("pdf_enabled"):
+        print("PDF generation is disabled for this project.")
+        print("To enable it, edit the project's data/prefs.json file and set pdf_enabled to true.")
+        return
+
+    try:
+        from weasyprint import HTML, CSS
+    except ImportError:
+        logging.error("WeasyPrint is not installed. Please install it with 'pip install weasyprint' to generate PDFs.")
+        return
+
     try:
         chapters = load_json(project_path / "data" / "chapters.json")
     except (FileNotFoundError, json.JSONDecodeError) as e:
