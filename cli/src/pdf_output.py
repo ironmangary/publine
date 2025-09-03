@@ -47,4 +47,3 @@ def build_pdf(project_path):
         print(f"✅ PDF exported: {output_path}")
     except Exception as e:
         logging.error(f"Error generating PDF: {e}")
-
