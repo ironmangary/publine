@@ -191,6 +191,37 @@ def get_chapter_plain_text_content(project_path, chapter_num):
 
     return chapter_title, plain_text_content
 
+def get_chapter_html_content(project_path, chapter_num):
+    """
+    Retrieves the raw HTML content of a specific chapter.
+    Returns (chapter_title, chapter_html_content) or raises an error.
+    """
+    chapters_path = get_chapters_path(project_path)
+    chapters = load_chapters(chapters_path)
+
+    chapter_data = next((ch for ch in chapters if ch["number"] == chapter_num), None)
+
+    if not chapter_data:
+        raise ValueError(f"Chapter {chapter_num} not found.")
+
+    chapter_title = chapter_data.get("title", f"Chapter {chapter_num}")
+    import_source_relative = chapter_data.get("import_source")
+    import_format = chapter_data.get("import_format")
+
+    if not import_source_relative:
+        return chapter_title, "" # Return empty if no source specified
+
+    full_source_path = os.path.join(project_path, import_source_relative)
+
+    if not os.path.exists(full_source_path):
+        raise FileNotFoundError(f"Chapter file not found: {full_source_path}")
+
+    # Use core.src.importer to get HTML content (it handles different import formats)
+    html_content = import_content(full_source_path, import_format)
+
+    return chapter_title, html_content
+
+
 def save_chapter_summary(project_path, chapter_num, summary_content):
     """
     Saves the AI-generated summary to a Markdown file within the project's includes directory.
@@ -203,6 +234,33 @@ def save_chapter_summary(project_path, chapter_num, summary_content):
     with open(summary_file_path, "w", encoding="utf-8") as f:
         f.write(summary_content)
     return summary_file_path
+
+def save_character_tracking_data(project_path, chapter_num, character_data):
+    """
+    Saves the AI-generated character tracking data to a JSON file.
+    """
+    includes_path = get_includes_path(project_path)
+    os.makedirs(includes_path, exist_ok=True)
+    character_filename = f"characters_chapter_{chapter_num}.json"
+    character_file_path = os.path.join(includes_path, character_filename)
+
+    with open(character_file_path, "w", encoding="utf-8") as f:
+        json.dump(character_data, f, indent=4)
+    return character_file_path
+
+def load_character_tracking_data(project_path, chapter_num):
+    """
+    Loads character tracking data from a JSON file if it exists.
+    Returns a list of character dicts, or None if the file doesn't exist.
+    """
+    includes_path = get_includes_path(project_path)
+    character_filename = f"characters_chapter_{chapter_num}.json"
+    character_file_path = os.path.join(includes_path, character_filename)
+
+    if os.path.exists(character_file_path):
+        with open(character_file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return None
 
 # The following functions are from original cli/src/chapter_utils.py but are not directly
 # called by the web chapter management logic as it is being built.

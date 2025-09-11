@@ -1,8 +1,12 @@
 import os
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from web.src.manage_projects import get_single_project_details, get_project_path
-from web.src.chapter_tools import get_chapter_tools_options, summarize_chapter_with_ai, generate_social_media_post_with_ai, save_social_media_post, _slugify_for_filename # Import _slugify_for_filename
-from web.src.chapter_utils import list_chapters, get_single_chapter_data, save_chapter_summary, get_chapter_plain_text_content
+import os
+import json # Added for handling JSON data for characters
+from flask import Blueprint, render_template, flash, redirect, url_for, request
+from web.src.manage_projects import get_single_project_details, get_project_path
+from web.src.chapter_tools import get_chapter_tools_options, summarize_chapter_with_ai, generate_social_media_post_with_ai, save_social_media_post, _slugify_for_filename, track_characters_with_ai
+from web.src.chapter_utils import list_chapters, get_single_chapter_data, save_chapter_summary, get_chapter_plain_text_content, save_character_tracking_data, load_character_tracking_data
 
 chapter_tools_bp = Blueprint('chapter_tools_bp', __name__)
 
@@ -67,6 +71,71 @@ def summarize_chapter(slug, chapter_num):
         chapter=chapter,
         summary_text=summary_text,
         expected_summary_file_relative=expected_summary_file_relative,
+        error_message=error_message
+    )
+
+@chapter_tools_bp.route("/project/<slug>/chapter_tools/track_characters/<int:chapter_num>", methods=["GET", "POST"])
+def track_characters(slug, chapter_num):
+    project = get_single_project_details(slug)
+    if not project:
+        flash("Project not found.", "error")
+        return redirect(url_for('projects_bp.manage_projects'))
+
+    project_path = get_project_path(slug)
+    chapter = get_single_chapter_data(project_path, chapter_num)
+    if not chapter:
+        flash(f"Chapter {chapter_num} not found.", "error")
+        return redirect(url_for('chapter_tools_bp.chapter_tools_menu', slug=slug))
+
+    characters_data = []
+    error_message = None
+    
+    # Calculate expected character file path for display purposes
+    expected_character_file_relative = os.path.join("includes", f"characters_chapter_{chapter_num}.json")
+
+    if request.method == "POST":
+        if "trigger_character_tracking" in request.form:
+            success, result, _ = track_characters_with_ai(project_path, chapter_num)
+            if success:
+                characters_data = result
+                flash("AI character tracking generated successfully. Please review and save.", "success")
+            else:
+                error_message = result
+                flash(f"Error generating AI character tracking: {error_message}", "error")
+        elif "save_characters" in request.form:
+            # The client-side might send the data back as JSON string
+            edited_characters_json = request.form.get("edited_characters_data")
+            if edited_characters_json:
+                try:
+                    # Parse the JSON string from the form
+                    parsed_characters = json.loads(edited_characters_json)
+                    save_character_tracking_data(project_path, chapter_num, parsed_characters)
+                    flash("Character data saved successfully.", "success")
+                    return redirect(url_for('chapter_tools_bp.chapter_tools_menu', slug=slug))
+                except json.JSONDecodeError:
+                    error_message = "Invalid JSON data provided for saving characters."
+                    flash(error_message, "error")
+                    characters_data = json.loads(edited_characters_json) if edited_characters_json else []
+                except Exception as e:
+                    error_message = f"Error saving character data: {e}"
+                    flash(error_message, "error")
+                    characters_data = json.loads(edited_characters_json) if edited_characters_json else []
+            else:
+                error_message = "No character data provided to save."
+                flash(error_message, "error")
+    else: # GET request
+        # Load existing character data if available
+        existing_characters = load_character_tracking_data(project_path, chapter_num)
+        if existing_characters:
+            characters_data = existing_characters
+            flash("Existing character data loaded.", "info")
+
+    return render_template(
+        "track_characters.html",
+        project=project,
+        chapter=chapter,
+        characters_data=characters_data,
+        expected_character_file_relative=expected_character_file_relative,
         error_message=error_message
     )
 

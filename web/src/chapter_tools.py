@@ -1,14 +1,14 @@
 import os
 import re # Added for slugification
 import logging # Added for logging
-# Removed LangChain imports as they are now encapsulated within AIProvider classes
-# from langchain_core.documents import Document
-# from langchain_core.prompts import PromptTemplate
+import os
+import re
+import logging
+import json # Added for JSON parsing/handling
 
-from core.src.ai_utils import get_ai_provider # Changed import to use the factory function
-from web.src.chapter_utils import get_chapter_plain_text_content, save_chapter_summary, list_chapters, get_single_chapter_data
+from core.src.ai_utils import get_ai_provider
+from web.src.chapter_utils import get_chapter_plain_text_content, save_chapter_summary, list_chapters, get_single_chapter_data, get_chapter_html_content, save_character_tracking_data
 
-# Configure logging for this module
 logger = logging.getLogger(__name__)
 
 def _slugify_for_filename(text):
@@ -26,7 +26,51 @@ def get_chapter_tools_options():
     return [
         {"name": "Summarize Chapter (AI)", "description": "Generate a summary of a specific chapter using AI.", "id": "summarize_ai"},
         {"name": "Generate Social Media Post (AI)", "description": "Create a social media post for a chapter using AI.", "id": "social_media_ai"},
+        {"name": "Track Characters (AI)", "description": "Extract and track character mentions from a chapter using AI.", "id": "track_characters_ai"},
     ]
+
+def track_characters_with_ai(project_path, chapter_num):
+    """
+    Loads a chapter's HTML content, sends it to the AI provider to extract characters,
+    and returns the structured character data.
+    Returns (success, list_of_characters_or_error_message, None)
+    """
+    try:
+        chapter_title, chapter_html_content = get_chapter_html_content(project_path, chapter_num)
+
+        if not chapter_html_content.strip():
+            return False, "Chapter content is empty, cannot track characters.", None
+
+        # Get the AI provider instance
+        ai_provider_instance = get_ai_provider()
+
+        # Use the abstraction layer to extract characters
+        # For now, previous_chapters_content is None as we are doing per-chapter tracking
+        character_data = ai_provider_instance.extract_characters(
+            chapter_text=chapter_html_content,
+            previous_chapters_content=None # To be expanded for project-level tracking
+        )
+
+        # Validate the structure of the AI response
+        if not isinstance(character_data, list):
+            raise ValueError("AI response for characters was not a list.")
+        for item in character_data:
+            if not all(k in item for k in ["name", "mentions", "first_appearance"]):
+                raise ValueError(f"Character item missing required keys: {item}")
+            if not isinstance(item["name"], str) or not isinstance(item["mentions"], int) or not isinstance(item["first_appearance"], bool):
+                raise ValueError(f"Character item has invalid data types: {item}")
+
+        return True, character_data, None # Return None for path, save later
+    except ValueError as ve:
+        logger.error(f"Configuration or AI response parsing error for character tracking: {ve}")
+        return False, f"Error: {ve}", None
+    except ConnectionError as ce: # Catch connection errors from local LLM
+        logger.error(f"Connection Error for character tracking: {ce}")
+        return False, f"Connection Error: {ce}", None
+    except Exception as e:
+        logger.error(f"AI character tracking failed: {e}", exc_info=True)
+        return False, f"AI character tracking failed: {e}", None
+
 
 def generate_social_media_post_with_ai(project_path, chapter_num, tone, length):
     """
