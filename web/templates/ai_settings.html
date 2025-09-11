@@ -22,9 +22,10 @@
 
         <div class="mb-3">
             <label for="ai_model_select" class="form-label">AI Model</label>
-            <select class="form-select" id="ai_model_select" name="ai_model_select" onchange="toggleCustomAIFields()">
+            <select class="form-select" id="ai_model_select" name="ai_model_select" onchange="toggleAIFields()">
                 <option value="">-- Select an AI Model --</option>
                 {% for provider in providers %}
+                    {% if provider.name != 'Local LLM' %}
                     <optgroup label="{{ provider.name }}">
                         {% for model in provider.models %}
                             <option value="{{ model.id }}"
@@ -33,9 +34,32 @@
                             </option>
                         {% endfor %}
                     </optgroup>
+                    {% endif %}
                 {% endfor %}
+                <option value="local-llm" {% if is_local_llm_selected %}selected{% endif %}>Local LLM (specify below)</option>
                 <option value="other" {% if is_other_model_selected %}selected{% endif %}>Other (specify below)</option>
             </select>
+        </div>
+
+        <div id="local_llm_fields" class="mb-3" style="display: none;">
+            <div class="mb-3">
+                <label for="local_llm_api_base" class="form-label">Local LLM API Base URL</label>
+                <input type="text" class="form-control" id="local_llm_api_base" name="local_llm_api_base"
+                       value="{{ local_llm_api_base_value }}"
+                       placeholder="e.g., http://localhost:11434/v1 or http://localhost:5000/v1">
+                <div class="form-text">
+                    This is the API endpoint for your local LLM (e.g., Ollama, LM Studio, TextGen WebUI).
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="local_ai_model" class="form-label">Local LLM Model Name</label>
+                <input type="text" class="form-control" id="local_ai_model" name="local_ai_model"
+                       value="{{ local_ai_model_value }}"
+                       placeholder="e.g., llama3, mistral">
+                <div class="form-text">
+                    The specific model name to use (e.g., the name you pull with Ollama or the model loaded in LM Studio).
+                </div>
+            </div>
         </div>
 
         <div id="custom_ai_fields" class="mb-3" style="display: none;">
@@ -77,16 +101,23 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        toggleCustomAIFields(); // Run on page load to set initial state
+        toggleAIFields(); // Run on page load to set initial state
     });
 
-    function toggleCustomAIFields() {
+    function toggleAIFields() {
         const select = document.getElementById('ai_model_select');
         const customFieldsDiv = document.getElementById('custom_ai_fields');
-        if (select.value === 'other') {
+        const localLlmFieldsDiv = document.getElementById('local_llm_fields');
+
+        // Hide both sections by default
+        customFieldsDiv.style.display = 'none';
+        localLlmFieldsDiv.style.display = 'none';
+
+        // Show the relevant section based on the selection
+        if (select.value === 'local-llm') {
+            localLlmFieldsDiv.style.display = 'block';
+        } else if (select.value === 'other') {
             customFieldsDiv.style.display = 'block';
-        } else {
-            customFieldsDiv.style.display = 'none';
         }
     }
 </script>

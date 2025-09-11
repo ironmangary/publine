@@ -1,10 +1,15 @@
 import os
 import re # Added for slugification
-from langchain_core.documents import Document
-from langchain_core.prompts import PromptTemplate
+import logging # Added for logging
+# Removed LangChain imports as they are now encapsulated within AIProvider classes
+# from langchain_core.documents import Document
+# from langchain_core.prompts import PromptTemplate
 
-from core.src.ai_utils import load_ai_settings, get_llm_and_chain
+from core.src.ai_utils import get_ai_provider # Changed import to use the factory function
 from web.src.chapter_utils import get_chapter_plain_text_content, save_chapter_summary, list_chapters, get_single_chapter_data
+
+# Configure logging for this module
+logger = logging.getLogger(__name__)
 
 def _slugify_for_filename(text):
     """Converts text to a filename-safe slug."""
@@ -34,58 +39,26 @@ def generate_social_media_post_with_ai(project_path, chapter_num, tone, length):
         if not chapter_text.strip():
             return False, "Chapter content is empty, cannot generate social media post.", None
 
-        # Load AI settings
-        ai_settings = load_ai_settings()
-        ai_provider = ai_settings.get("AI_PROVIDER")
-        ai_model = ai_settings.get("AI_MODEL")
-        # For social media posts, we might want a slightly lower temperature for more direct output
-        temperature = ai_settings.get("AI_TEMPERATURE", 0.7) 
-        max_tokens = ai_settings.get("AI_MAX_TOKENS", 500) # Max tokens for a post
-
-        if not ai_provider or not ai_model:
-            return False, "AI provider or model not configured in .env file.", None
+        # Get the AI provider instance
+        ai_provider_instance = get_ai_provider()
         
-        template = """
-        You are an expert social media manager. Your task is to draft a promotional social media post for a chapter of a book.
-        
-        Chapter Title: {chapter_title}
-        Chapter Content: {chapter_content}
-        
-        Desired Tone: {tone}
-        Desired Length: {length}
-        
-        Please draft a compelling social media post based on the chapter content, adhering to the specified tone and length. 
-        Focus on engaging potential readers and highlighting key aspects or mysteries of the chapter without giving away major spoilers.
-        Do not include hashtags or emojis unless explicitly asked for in the tone/length, just the post content itself.
-        """
-        
-        prompt = PromptTemplate(
-            template=template,
-            input_variables=["chapter_title", "chapter_content", "tone", "length"]
+        # Use the abstraction layer to generate the social post
+        post_content = ai_provider_instance.generate_social_post(
+            chapter_title=chapter_title,
+            chapter_text=chapter_text,
+            tone=tone,
+            length=length
         )
-
-        # Initialize LLM and chain
-        llm, _ = get_llm_and_chain(ai_provider, ai_model, temperature, max_tokens)
-        llm_chain = prompt | llm
-
-        # Run the generation chain
-        post_response = llm_chain.invoke({ # Changed variable name to avoid confusion with post_content string
-            "chapter_title": chapter_title,
-            "chapter_content": chapter_text,
-            "tone": tone,
-            "length": length
-        })
-
-        # Access the content attribute of the AIMessage object
-        post_content = post_response.content
 
         return True, post_content.strip(), None
     except ValueError as ve:
+        logger.error(f"Configuration Error for social post generation: {ve}")
         return False, f"Configuration Error: {ve}", None
-    except FileNotFoundError as fnfe:
-        return False, f"File Error: {fnfe}", None
+    except ConnectionError as ce: # Catch connection errors from local LLM
+        logger.error(f"Connection Error for social post generation: {ce}")
+        return False, f"Connection Error: {ce}", None
     except Exception as e:
-        # Catch any other exceptions from LangChain, API calls, etc.
+        logger.error(f"AI social media post generation failed: {e}", exc_info=True)
         return False, f"AI social media post generation failed: {e}", None
 
 def save_social_media_post(project_path, project_slug, chapter_num, post_content, post_length, post_tone):
@@ -108,7 +81,7 @@ def save_social_media_post(project_path, project_slug, chapter_num, post_content
 
 def summarize_chapter_with_ai(project_path, chapter_num):
     """
-    Loads a chapter, extracts its plain text, and generates a summary using LangChain.
+    Loads a chapter, extracts its plain text, and generates a summary using AI.
     Returns (success, summary_text or error_message, saved_file_path)
     """
     try:
@@ -117,35 +90,22 @@ def summarize_chapter_with_ai(project_path, chapter_num):
         if not chapter_text.strip():
             return False, "Chapter content is empty, cannot summarize.", None
 
-        # Load AI settings
-        ai_settings = load_ai_settings()
-        ai_provider = ai_settings.get("AI_PROVIDER")
-        ai_model = ai_settings.get("AI_MODEL")
-        temperature = ai_settings.get("AI_TEMPERATURE")
-        max_tokens = ai_settings.get("AI_MAX_TOKENS")
+        # Get the AI provider instance
+        ai_provider_instance = get_ai_provider()
 
-        if not ai_provider or not ai_model:
-            return False, "AI provider or model not configured in .env file.", None
-
-        # Initialize LLM and summarization chain
-        llm, summarize_chain = get_llm_and_chain(ai_provider, ai_model, temperature, max_tokens)
-
-        # LangChain expects a list of Document objects
-        # The 'stuff' chain type takes the entire text as one document.
-        docs = [Document(page_content=chapter_text)]
-
-        # Run the summarization chain
-        summary_response = summarize_chain.invoke( # Changed variable name
-            {"input_documents": docs, "chapter_title": chapter_title},
-            return_only_outputs=True
+        # Use the abstraction layer to summarize the chapter
+        summary_text = ai_provider_instance.summarize_chapter(
+            chapter_title=chapter_title,
+            chapter_text=chapter_text
         )
-        summary_text = summary_response["output_text"]
 
         return True, summary_text, None # Return None for path initially, save later
     except ValueError as ve:
+        logger.error(f"Configuration Error for summarization: {ve}")
         return False, f"Configuration Error: {ve}", None
-    except FileNotFoundError as fnfe:
-        return False, f"File Error: {fnfe}", None
+    except ConnectionError as ce: # Catch connection errors from local LLM
+        logger.error(f"Connection Error for summarization: {ce}")
+        return False, f"Connection Error: {ce}", None
     except Exception as e:
-        # Catch any other exceptions from LangChain, API calls, etc.
+        logger.error(f"AI summarization failed: {e}", exc_info=True)
         return False, f"AI summarization failed: {e}", None

@@ -1,5 +1,9 @@
 import json
 import os
+from core.src.paths import base_dir # Added for API_PROVIDERS_PATH
+
+# Path to api_providers.json at the project root's 'data' directory
+API_PROVIDERS_PATH = os.path.join(base_dir, "..", "data", "api_providers.json")
 
 def load_prefs(project_path):
     prefs_path = os.path.join(project_path, "data", "prefs.json")
@@ -30,4 +34,13 @@ def save_json(path, data):
 def load_links(project_path):
     path = os.path.join(project_path, "data", "links.json")
     return load_json(path)
+
+def load_ai_providers():
+    """
+    Loads available AI providers and models from data/api_providers.json.
+    """
+    if os.path.exists(API_PROVIDERS_PATH):
+        return load_json(API_PROVIDERS_PATH)
+    else:
+        return {"providers": []}
 

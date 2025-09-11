@@ -58,7 +58,7 @@ def edit_project(slug):
         )
         if success:
             flash(message, "success")
-            return redirect(url_for("manage_projects"))
+            return redirect(url_for("projects_bp.manage_projects"))
         else:
             flash(message, "error")
     
