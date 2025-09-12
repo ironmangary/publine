@@ -1,7 +1,12 @@
-# fake_local_model.py
 from flask import Flask, request, jsonify
 import random
 import time
+
+"""
+The purpose of fake_local.py is to simulate running a local LLM for the purpose of testing Publine's local AI support. It works with any of Publine's AI features, returning a generic response to AI queries.
+
+To use it, make sure this script is in the root of 'publine' and run 'python fake_local.py'.
+"""
 
 app = Flask(__name__)
 
