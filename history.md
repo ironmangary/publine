@@ -2,6 +2,23 @@
 
 ## Detaileddevelopment history
 
+## v1.0 Beta 1 (2025-09-12)
+
+### Highlights
+
+- **Local model support**
+   - Added support for local LLMs via AI abstraction layer (`AIProvider`), configurable through `.env`
+   - Implemented mock Flask server (`fake_local.py`) to simulate local model responses for testing
+   - Refactored existing AI tools (Summarize Chapter, Generate Social Media Post) to route through abstraction layer
+
+- **Project Tool: Character Tracker (AI)**
+  - Extracts named characters from chapter HTML
+  - Displays sortable table of character mentions
+
+### Bug Fixes
+
+- Fixed a bug where project.title was not properly being displayed in the Project Dashboard
+
 ## v1.0 Alpha 9 (2025-09-02)
 
 This version of Publine introduces AI tools and will likely be the last alpha version. There is a *Project Tools* menu that is only a stub for now, but you can play around with *Chapter Summaries* and *Social Media Posts* created by AI from within the *Chapter Tools* menu.
