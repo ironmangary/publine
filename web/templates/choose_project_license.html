@@ -26,7 +26,7 @@
             {% endif %}
         </div>
         <button type="submit" class="btn btn-primary">Apply License</button>
-        <a href="{{ url_for('project_dashboard', slug=project.slug) }}" class="btn btn-secondary">Cancel</a>
+        <a href="{{ url_for('projects_bp.project_dashboard', slug=project.slug) }}" class="btn btn-secondary">Cancel</a>
     </form>
 
     <hr class="my-4">
@@ -43,7 +43,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p>No global licenses defined. Please go to the <a href="{{ url_for('manage_licenses') }}">Global Licenses Manager</a> to add some.</p>
+            <p>No global licenses defined. Please go to the <a href="{{ url_for('licenses_bp.manage_licenses') }}">Global Licenses Manager</a> to add some.</p>
         {% endif %}
     </div>
 </div>
