@@ -51,7 +51,7 @@ def choose_project_license(slug):
             }
             save_prefs(project['project_path'], project_prefs)
             flash(f"License '{chosen_license['long_name']}' applied to project '{project['title']}'.", "success")
-            return redirect(url_for("project_dashboard", slug=slug))
+            return redirect(url_for("projects_bp.project_dashboard", slug=slug))
         else:
             flash("Invalid license selected.", "danger")
 
