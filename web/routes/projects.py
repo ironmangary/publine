@@ -23,7 +23,7 @@ def create_project():
 
 @projects_bp.route("/project/<slug>", methods=["GET"])
 def project_dashboard(slug):
-    project = web_chapters.get_project_details(slug)
+    project = get_single_project_details(slug)
     if not project:
         flash(f"Project '{slug}' not found.", "error")
         return redirect(url_for("projects_bp.manage_projects"))
