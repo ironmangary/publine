@@ -22,7 +22,6 @@ from web.routes.social_media import social_media_bp # Import the new social medi
 from web.routes.chapters import chapters_bp # Import the new chapters blueprint
 from web.routes.licenses import licenses_bp # Import the new licenses blueprint
 from web.routes.publish import publish_bp # Import the new publish blueprint
-from web.routes.project_tools import project_tools_bp # Import the new project tools blueprint
 from web.routes.chapter_tools import chapter_tools_bp # Import the new chapter tools blueprint
 from web.routes.ai_settings import ai_settings_bp # Import the new AI Settings blueprint
 
@@ -44,7 +43,6 @@ app.register_blueprint(social_media_bp) # Register the new social media blueprin
 app.register_blueprint(chapters_bp) # Register the new chapters blueprint
 app.register_blueprint(licenses_bp) # Register the new licenses blueprint
 app.register_blueprint(publish_bp) # Register the new publish blueprint
-app.register_blueprint(project_tools_bp) # Register the new project tools blueprint
 app.register_blueprint(chapter_tools_bp) # Register the new chapter tools blueprint
 app.register_blueprint(ai_settings_bp) # Register the new AI Settings blueprint
 
